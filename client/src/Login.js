@@ -43,6 +43,7 @@ class Login extends Component {
       loginRole:'student'
     }
   }
+  
   componentWillMount(){
   // console.log("willmount prop values",this.props);
   if(this.props.role != undefined){
