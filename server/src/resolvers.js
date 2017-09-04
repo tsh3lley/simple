@@ -31,11 +31,6 @@ export const resolvers = {
 
 	// this is probably wrong
   Mutation: {
-    addChannel: (root, args) => {
-      const newChannel = { id: String(nextId++), messages: [], name: args.name };
-      channels.push(newChannel);
-      return newChannel;
-    },
     signup: (root, args) => {
 
     },
@@ -47,16 +42,6 @@ export const resolvers = {
     },
     updateTransaction: (root, args) => {
     	return Transaction.update
-    },
-    addMessage: (root, { message }) => {
-      const channel = channels.find(channel => channel.id === message.channelId);
-      if(!channel)
-        throw new Error("Channel does not exist");
-
-      const newMessage = { id: String(nextMessageId++), text: message.text };
-      channel.messages.push(newMessage);
-
-      return newMessage;
     },
   },
 };
