@@ -1,7 +1,6 @@
 import './App.css';
 import LoginScreen from './Loginscreen';
 import UploadScreen from './UploadScreen';
-import UploadPage from './UploadPage';
 import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 // Needed for onTouchTap
