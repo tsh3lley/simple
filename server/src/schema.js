@@ -20,7 +20,7 @@ input CreateBudgetInput {
 
 type User {
 	id: ID!
-	email: ID!
+	email: String!
 	name: String!
 	budget: Budget
 	transactions: [Transaction]
@@ -42,6 +42,10 @@ type Budget {
 	amtRemaining: Float!
 }
 
+type Token {
+	token: String!
+}
+
 type Query {
 	user(id: ID!): User 
   	transactions(userId: ID!): [Transaction]
@@ -50,7 +54,7 @@ type Query {
 
 type Mutation {
 	signup(user: SigninUserInput!): User
-	login(user: SigninUserInput!): User
+	login(user: SigninUserInput!): Token
 	createBudget(budget: CreateBudgetInput!): Budget
 	updateTransaction(id: ID!): Transaction
 }

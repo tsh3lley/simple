@@ -4,7 +4,7 @@
   "description": "The simple weekly budget app",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./index.js --exec babel-node --presets es2015,stage-2 -e js",
+    "start": "nodemon ./index.js --exec babel-node --presets es2015,stage-2 -e js --watch .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "roadrunner bill",
@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "bcrypt": "^1.0.2",
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "cors": "^2.8.3",
     "dotenv": "^4.0.0",

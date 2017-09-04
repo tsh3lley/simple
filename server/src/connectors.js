@@ -19,7 +19,7 @@ const TransactionModel = db.define('transaction', {
 });
 
 const UserModel = db.define('user', {
-  email: { type: Sequelize.STRING },
+  email: { type: Sequelize.STRING, unique: true },
   name: { type: Sequelize.STRING },
   password: { type: Sequelize.STRING },
 });
@@ -33,4 +33,4 @@ const Transaction = db.models.transaction;
 const Budget = db.models.budget;
 const User = db.models.user;
 
-export { Transaction, Budget, User };
+export { Transaction, Budget, User, db};
