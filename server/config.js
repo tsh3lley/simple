@@ -4,6 +4,10 @@ dotenv.config({ silent: true });
 
 export const {
   JWT_SECRET,
+  PLAID_CLIENT_ID,
+	PLAID_SECRET,
+	PLAID_PUBLIC_KEY,
+	PLAID_ENV,
 } = process.env;
 
 const defaults = {
@@ -15,5 +19,3 @@ Object.keys(defaults).forEach((key) => {
     throw new Error(`Please enter a custom ${key} in .env on the root directory`);
   }
 });
-
-export default JWT_SECRET;

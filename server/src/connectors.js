@@ -24,13 +24,22 @@ const UserModel = db.define('user', {
   password: { type: Sequelize.STRING },
 });
 
+// a plaid item is a user's bank object
+// ex. one user can have a PNC item and a BoA item
+const PlaidItemModel = db.define('plaidItem', {
+  itemId: { type: Sequelize.STRING },
+  token: { type: Sequelize.STRING },
+})
+
 BudgetModel.belongsTo(UserModel);
 
-// messages are sent to groups
 TransactionModel.belongsTo(UserModel);
+
+PlaidItemModel.belongsTo(UserModel);
 
 const Transaction = db.models.transaction;
 const Budget = db.models.budget;
 const User = db.models.user;
+const PlaidItem = db.models.plaidItem;
 
-export { Transaction, Budget, User, db};
+export { Transaction, Budget, User, PlaidItem, db};

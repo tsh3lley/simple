@@ -1,8 +1,9 @@
 import GraphQLDate from 'graphql-date';
-import { Transaction, Budget, User } from './connectors';
+import { Transaction, Budget, User, PlaidItem} from './connectors';
 import bluebird from 'bluebird';
-import { JWT_SECRET } from '../config'
-import jwt from 'jsonwebtoken'
+import { JWT_SECRET, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PUBLIC_KEY, PLAID_ENV } from '../config';
+import jwt from 'jsonwebtoken';
+import plaid from 'plaid';
 
 const bcrypt = bluebird.promisifyAll(require('bcrypt'));
 
@@ -58,5 +59,30 @@ export const resolvers = {
     updateTransaction: (root, args) => {
 
     },
+    addPlaidItem: async (root, { token }, context) => {
+      const client = new plaid.Client(
+        PLAID_CLIENT_ID,
+        PLAID_SECRET,
+        PLAID_PUBLIC_KEY,
+        plaid.environments[PLAID_ENV],
+      );
+
+      const user = await User.findOne({ where: { id: 1 }});
+      const plaidResult = await client.exchangePublicToken(token);
+
+      if (!plaidResult) {
+        const msg = 'Could not exchange public_token!';
+        console.log(`${msg}\n${error}`);
+        return null;
+      }
+
+      const result = await PlaidItem.create({ 
+        itemId: plaidResult.access_token, 
+        token: plaidResult.item_id, 
+        userId: user.id, 
+      });
+      console.log(result);
+      return result;
+    }
   },
 };

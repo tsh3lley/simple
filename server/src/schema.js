@@ -46,6 +46,12 @@ type Token {
 	token: String!
 }
 
+type PlaidItem { 
+	id: ID!
+	token: String!
+	itemId: String!
+}
+
 type Query {
 	user(id: ID!): User 
   	transactions(userId: ID!): [Transaction]
@@ -57,6 +63,7 @@ type Mutation {
 	login(user: SigninUserInput!): Token
 	createBudget(budget: CreateBudgetInput!): Budget
 	updateTransaction(id: ID!): Transaction
+	addPlaidItem(token: String!): PlaidItem
 }
 `
 
