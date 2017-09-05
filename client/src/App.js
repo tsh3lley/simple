@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import PlaidLink from 'react-plaid-link';
+import LoginScreen from './Loginscreen';
+import UploadScreen from './UploadScreen';
+import React, { Component } from 'react';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import { 
   gql,
   graphql,
@@ -10,12 +12,22 @@ import {
   createNetworkInterface,
 } from 'react-apollo';
 
+injectTapEventPlugin();
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       plaidItem: null,
+      loginPage:[],
+      uploadScreen:[]
     }
+  }
+
+  componentWillMount(){
+    var loginPage =[];
+    loginPage.push(<LoginScreen appContext={this}/>);
+    this.setState({loginPage:loginPage})
   }
 
   async handleOnSuccess(token, metadata) {
@@ -25,14 +37,12 @@ class App extends Component {
     console.log(this.props);
     const plaidItem = await this.props.mutate({ variables: { token: token }});
     this.setState({ plaidItem });
-    //graphql query here
   }
 
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
         <p className="App-intro">
@@ -48,6 +58,8 @@ class App extends Component {
         <div>
           {JSON.stringify(this.state.plaidItem)}
         </div>
+        {this.state.loginPage}
+        {this.state.uploadScreen}
       </div>
     );
   }
