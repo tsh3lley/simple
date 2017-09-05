@@ -18,6 +18,12 @@ input CreateBudgetInput {
 	amtAllowed: Float!
 }
 
+input CreateTransactionInput {
+  type: String!
+  description: String!
+  amount: Float!
+}
+
 type User {
 	id: ID!
 	email: String!
@@ -53,7 +59,7 @@ type PlaidItem {
 }
 
 type Query {
-	user(id: ID!): User 
+	user(id: ID!): User
   	transactions(userId: ID!): [Transaction]
   	budget(userId: ID!): Budget
 }
@@ -62,6 +68,7 @@ type Mutation {
 	signup(user: SigninUserInput!): User
 	login(user: SigninUserInput!): Token
 	createBudget(budget: CreateBudgetInput!): Budget
+  createTransaction(transaction: CreateTransactionInput!): Transaction
 	updateTransaction(id: ID!): Transaction
 	addPlaidItem(token: String!): PlaidItem
 }
