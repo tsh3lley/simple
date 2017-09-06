@@ -8,6 +8,8 @@ export const {
 	PLAID_SECRET,
 	PLAID_PUBLIC_KEY,
 	PLAID_ENV,
+	WEBHOOK_URL,
+
 } = process.env;
 
 const defaults = {

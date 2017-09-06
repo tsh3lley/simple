@@ -23,12 +23,14 @@ class App extends Component {
       uploadScreen:[]
     }
   }
-
+  
+  /*
   componentWillMount(){
     var loginPage =[];
     loginPage.push(<LoginScreen appContext={this}/>);
     this.setState({loginPage:loginPage})
   }
+  */
 
   async handleOnSuccess(token, metadata) {
     // returns public_token, which will expire in 30 minutes
@@ -53,7 +55,7 @@ class App extends Component {
           product="auth"
           env="sandbox"
           clientName="SimpleBudget"
-          onSuccess={(token,metadata) => this.handleOnSuccess(token,metadata)}
+          onSuccess={(token, metadata) => this.handleOnSuccess(token,metadata)}
         />
         <div>
           {JSON.stringify(this.state.plaidItem)}

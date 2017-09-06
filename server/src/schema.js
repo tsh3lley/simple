@@ -68,9 +68,10 @@ type Mutation {
 	signup(user: SigninUserInput!): User
 	login(user: SigninUserInput!): Token
 	createBudget(budget: CreateBudgetInput!): Budget
-  createTransaction(transaction: CreateTransactionInput!): Transaction
+  	createTransaction(transaction: CreateTransactionInput!): Transaction
 	updateTransaction(id: ID!): Transaction
 	addPlaidItem(token: String!): PlaidItem
+	refreshTransactionsWebhook(itemId: String!, newTransactions: Int!): String
 }
 `
 

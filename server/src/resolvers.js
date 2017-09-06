@@ -1,7 +1,7 @@
 import GraphQLDate from 'graphql-date';
 import { Transaction, Budget, User, PlaidItem} from './connectors';
 import bluebird from 'bluebird';
-import { JWT_SECRET, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PUBLIC_KEY, PLAID_ENV } from '../config';
+import { JWT_SECRET, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PUBLIC_KEY, PLAID_ENV, WEBHOOK_URL } from '../config';
 import jwt from 'jsonwebtoken';
 import plaid from 'plaid';
 
@@ -77,6 +77,7 @@ export const resolvers = {
         plaid.environments[PLAID_ENV],
       );
 
+      //change this shit (id: context.user.id)
       const user = await User.findOne({ where: { id: 1 }});
       const plaidResult = await client.exchangePublicToken(token);
 
@@ -92,7 +93,14 @@ export const resolvers = {
         userId: user.id, 
       });
       console.log(result);
+      const webhookResult = await client.updateItemWebhook(plaidResult.access_token, WEBHOOK_URL);
+      console.log(webhookResult);
       return result;
+    },
+    refreshTransactionsWebhook: async (root, { itemId, numTransactions }) => {
+      //plaid webhook hits our endpoint telling it that info has changed,
+      //handle the result here
+      return null;
     }
   },
 };
