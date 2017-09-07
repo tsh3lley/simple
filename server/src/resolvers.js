@@ -80,7 +80,7 @@ export const resolvers = {
       //change this shit (id: context.user.id)
       const user = await User.findOne({ where: { id: 1 }});
       const plaidResult = await client.exchangePublicToken(token);
-
+      console.log(plaidResult);
       if (!plaidResult) {
         const msg = 'Could not exchange public_token!';
         console.log(`${msg}\n${error}`);
@@ -88,11 +88,14 @@ export const resolvers = {
       }
 
       const result = await PlaidItem.create({ 
-        itemId: plaidResult.access_token, 
-        token: plaidResult.item_id, 
+        itemId: plaidResult.item_id, 
+        token: plaidResult.access_token, 
         userId: user.id, 
       });
+
+      console.log('aksaifjsgekgjelgj');
       console.log(result);
+
       const webhookResult = await client.updateItemWebhook(plaidResult.access_token, WEBHOOK_URL);
       console.log(webhookResult);
       return result;
@@ -100,7 +103,29 @@ export const resolvers = {
     refreshTransactionsWebhook: async (root, { itemId, numTransactions }) => {
       //plaid webhook hits our endpoint telling it that info has changed,
       //handle the result here
-      return null;
+      const client = new plaid.Client(
+        PLAID_CLIENT_ID,
+        PLAID_SECRET,
+        PLAID_PUBLIC_KEY,
+        plaid.environments[PLAID_ENV],
+      );
+
+      const item = await PlaidItem.findOne({
+        where: {itemId: itemId}, 
+        include: User,
+      });
+      console.log(item.token);
+      
+      try { const transactions = await client.getTransactions(
+        item.token, 
+        '2017-07-27', 
+        '2017-08-27', 
+      );  } catch(err) {
+        console.log(err);
+      }
+
+      console.log(transactions);
+      return true;
     }
   },
 };
