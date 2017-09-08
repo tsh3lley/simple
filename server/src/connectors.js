@@ -11,8 +11,12 @@ const BudgetModel = db.define('budget', {
 });
 
 const TransactionModel = db.define('transaction', {
-  type: { type: Sequelize.STRING },
-  description: { type: Sequelize.STRING },
+  transactionId: { type: Sequelize.STRING },
+  accountId: { type: Sequelize.STRING },
+  category: { type: Sequelize.STRING },
+  categoryId: { type: Sequelize.STRING },
+  type: { type: Sequelize.STRING }, // cash (entered by user) or one of the plaid types
+  pending: { type: Sequelize.BOOLEAN },
   amount: { type: Sequelize.FLOAT },
   ignore: { type: Sequelize.BOOLEAN },
   date: { type: Sequelize.DATE },

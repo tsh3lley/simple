@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { 
   gql,
+  compose,
   graphql,
   ApolloClient,
   ApolloProvider,
@@ -20,10 +21,11 @@ class App extends Component {
     this.state = {
       plaidItem: null,
       loginPage:[],
-      uploadScreen:[]
+      uploadScreen:[],
+      transactions: {}
     }
   }
-  
+
   /*
   componentWillMount(){
     var loginPage =[];
@@ -35,10 +37,17 @@ class App extends Component {
   async handleOnSuccess(token, metadata) {
     // returns public_token, which will expire in 30 minutes
     // send the public_token to the server and exchange it there for an access_token
-    console.log(token, metadata);
-    console.log(this.props);
     const plaidItem = await this.props.mutate({ variables: { token: token }});
     this.setState({ plaidItem });
+  }
+
+  async refreshData() {
+    console.log(this.props.data);
+    /*const allTransactions = await this.props.mutate({  })
+    const transactions = allTransactions.map((transaction) =>
+      <li>{transaction}</li>
+    );
+    */
   }
 
   render() {
@@ -60,8 +69,8 @@ class App extends Component {
         <div>
           {JSON.stringify(this.state.plaidItem)}
         </div>
-        {this.state.loginPage}
-        {this.state.uploadScreen}
+        <button onClick={() => this.refreshData()}> Refresh Data </button>
+        
       </div>
     );
   }
@@ -75,4 +84,16 @@ const addPlaidItemMutation = gql`
   }
 `;
 
-export default graphql(addPlaidItemMutation)(App);
+const getTransactionsQuery = gql`
+  query getTransactions($id: ID!) {
+    transactions(userId: $id){Transaction}
+  }
+`;
+
+//change User ID use context.user.id
+export default compose (
+  graphql(addPlaidItemMutation),
+  graphql(getTransactionsQuery, {
+    options: { variables: { userId: 1 } },
+  })
+)(App);

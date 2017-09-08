@@ -4,6 +4,7 @@ import bluebird from 'bluebird';
 import { JWT_SECRET, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PUBLIC_KEY, PLAID_ENV, WEBHOOK_URL } from '../config';
 import jwt from 'jsonwebtoken';
 import plaid from 'plaid';
+import moment from 'moment';
 
 const bcrypt = bluebird.promisifyAll(require('bcrypt'));
 
@@ -92,15 +93,12 @@ export const resolvers = {
         token: plaidResult.access_token, 
         userId: user.id, 
       });
-
-      console.log('aksaifjsgekgjelgj');
       console.log(result);
-
       const webhookResult = await client.updateItemWebhook(plaidResult.access_token, WEBHOOK_URL);
       console.log(webhookResult);
       return result;
     },
-    refreshTransactionsWebhook: async (root, { itemId, numTransactions }) => {
+    refreshTransactionsWebhook: async (root, { itemId, numTransactions, webhookCode }) => {
       //plaid webhook hits our endpoint telling it that info has changed,
       //handle the result here
       const client = new plaid.Client(
@@ -114,17 +112,33 @@ export const resolvers = {
         where: {itemId: itemId}, 
         include: User,
       });
-      console.log(item.token);
-      
-      try { const transactions = await client.getTransactions(
+
+      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
+      const today = moment().format('YYYY-MM-DD');
+
+      const result = await client.getTransactions(
         item.token, 
-        '2017-07-27', 
-        '2017-08-27', 
-      );  } catch(err) {
-        console.log(err);
+        lastWeek, 
+        today, 
+      );  
+
+      for (var transaction of result.transactions) {
+        const transAmt = parseFloat(transaction.amount);
+        const transDate = moment(transaction.date).format('YYYY-MM-DD');
+
+        let newTransaction = await Transaction.create({
+          transactionId: transaction.transaction_id,
+          accountId: transaction.account_id,
+          categoryId: transaction.category_id,
+          type: transaction.transaction_type,
+          pending: transaction.pending,
+          amount: transaction.amount,
+          ignore: false,
+          date: transaction.date,
+        });
+        console.log(newTransaction);
       }
 
-      console.log(transactions);
       return true;
     }
   },

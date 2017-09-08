@@ -17,32 +17,36 @@ const server = express();
 
 server.use('*', bodyParser.json(), cors({ origin: 'http://localhost:3000' }));
 
-server.use(
-  '/graphql',
-  jwt({
-      secret: JWT_SECRET,
-      credentialsRequired: false
-  }),
-  graphqlExpress(req => ({ 
-    schema,
-    context: {
-      user: req.user || {}
-    }
-  }))
-);
+try{
+  server.use(
+    '/graphql',
+    jwt({
+        secret: JWT_SECRET,
+        credentialsRequired: false
+    }),
+    graphqlExpress(req => ({ 
+      schema,
+      context: {
+        user: req.user || {}
+      }
+    }))
+  );
+} catch(err){
+  console.log(err);
+}
 
 server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
 }));
 
-// accept webhook via rest cuz plaid isnt F U T U R E
+// accept webhook via rest
 server.post('/webhook', async (req, res) => {
-  //webhook query
   const webhookMutation = `
     mutation {
       refreshTransactionsWebhook(
-        itemId: "${req.body.itemId}"
-        newTransactions: ${req.body.newTransactions}
+        itemId: "${req.body.item_id}"
+        newTransactions: ${req.body.new_transactions}
+        webhookCode: "${req.body.webhook_code}"
       )
     }
   `

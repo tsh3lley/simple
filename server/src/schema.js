@@ -35,8 +35,12 @@ type User {
 
 type Transaction {
 	id: ID!
+	transactionId: String!
+	accountId: String!
+	category: String!
+	categoryId: String!
 	type: String!
-	description: String!
+	pending: Boolean!
 	amount: Float!
 	ignore: Boolean!
 	date: Date!
@@ -71,7 +75,7 @@ type Mutation {
   	createTransaction(transaction: CreateTransactionInput!): Transaction
 	updateTransaction(id: ID!): Transaction
 	addPlaidItem(token: String!): PlaidItem
-	refreshTransactionsWebhook(itemId: String!, newTransactions: Int!): Boolean
+	refreshTransactionsWebhook(itemId: String!, newTransactions: Int!, webhookCode: String!): Boolean
 }
 `
 
