@@ -20,6 +20,7 @@ const TransactionModel = db.define('transaction', {
   amount: { type: Sequelize.FLOAT },
   ignore: { type: Sequelize.BOOLEAN },
   date: { type: Sequelize.DATE },
+  name: { type: Sequelize.STRING }
 });
 
 const UserModel = db.define('user', {
@@ -35,10 +36,11 @@ const PlaidItemModel = db.define('plaidItem', {
   token: { type: Sequelize.STRING },
 })
 
+UserModel.hasMany(PlaidItemModel);
+UserModel.hasMany(TransactionModel);
+
 BudgetModel.belongsTo(UserModel);
-
 TransactionModel.belongsTo(UserModel);
-
 PlaidItemModel.belongsTo(UserModel);
 
 const Transaction = db.models.transaction;

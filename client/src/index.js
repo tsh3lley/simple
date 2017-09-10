@@ -4,8 +4,6 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { 
-  gql,
-  graphql,
   ApolloClient,
   ApolloProvider,
   createNetworkInterface,
@@ -15,5 +13,11 @@ const networkInterface = createNetworkInterface({ uri: 'http://localhost:4000/gr
 
 const client = new ApolloClient({ networkInterface: networkInterface });
 
-ReactDOM.render(<ApolloProvider client = {client}><App /></ApolloProvider>, document.getElementById('root'));
+ReactDOM.render(
+	<ApolloProvider client = {client}>
+		<App />
+	</ApolloProvider>, 
+  document.getElementById('root')
+);
+
 registerServiceWorker();

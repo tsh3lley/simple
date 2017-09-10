@@ -14,18 +14,10 @@ export const resolvers = {
 		user(root, args) {
 		 	return User.findOne({where: args});
 		},
-		transactions(root, args) {
-			return Transaction.findAll({
-        where: args,
-        order: [['date', 'DESC']],
-      });
-		},
-		budget(root, args) {
-			return Budget.findOne({where: args});
-		},
 	},
 	User: {
     transactions(user) {
+      console.log(user);
     	return Transaction.findAll({
 	      where: { userId: user.id },
 	      order: [['date', 'DESC']],
@@ -35,7 +27,6 @@ export const resolvers = {
     	return user.getBudget();
     },
 	},
-
   Mutation: {
     signup: async (root, { user }) => {
       user.password = await bcrypt.hashAsync(user.password, 12);
@@ -113,6 +104,7 @@ export const resolvers = {
         include: User,
       });
 
+      const user = item.user;
       const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
 
@@ -126,7 +118,7 @@ export const resolvers = {
         const transAmt = parseFloat(transaction.amount);
         const transDate = moment(transaction.date).format('YYYY-MM-DD');
 
-        let newTransaction = await Transaction.create({
+        let newTransaction = await user.createTransaction({
           transactionId: transaction.transaction_id,
           accountId: transaction.account_id,
           categoryId: transaction.category_id,
@@ -135,6 +127,7 @@ export const resolvers = {
           amount: transaction.amount,
           ignore: false,
           date: transaction.date,
+          name:transaction.name
         });
         console.log(newTransaction);
       }

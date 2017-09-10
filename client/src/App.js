@@ -1,19 +1,11 @@
 import './App.css';
 import PlaidLink from 'react-plaid-link';
-import LoginScreen from './Loginscreen';
-import UploadScreen from './UploadScreen';
 import React, { Component } from 'react';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import { 
   gql,
   compose,
   graphql,
-  ApolloClient,
-  ApolloProvider,
-  createNetworkInterface,
 } from 'react-apollo';
-
-injectTapEventPlugin();
 
 class App extends Component {
   constructor(props) {
@@ -22,17 +14,9 @@ class App extends Component {
       plaidItem: null,
       loginPage:[],
       uploadScreen:[],
-      transactions: {}
+      transactions:[]
     }
   }
-
-  /*
-  componentWillMount(){
-    var loginPage =[];
-    loginPage.push(<LoginScreen appContext={this}/>);
-    this.setState({loginPage:loginPage})
-  }
-  */
 
   async handleOnSuccess(token, metadata) {
     // returns public_token, which will expire in 30 minutes
@@ -42,23 +26,49 @@ class App extends Component {
   }
 
   async refreshData() {
-    console.log(this.props.data);
-    /*const allTransactions = await this.props.mutate({  })
-    const transactions = allTransactions.map((transaction) =>
-      <li>{transaction}</li>
-    );
-    */
+    this.props.data.refetch();
   }
 
   render() {
+    let transactionsTable = null;
+    const { data: { loading } } = this.props;
+    if (loading) {
+      transactionsTable = <h1>loading...</h1>
+    } else { 
+      const { data: { user: { transactions } } } = this.props;
+      transactionsTable = (
+        <table>
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>amount</th>
+              <th>ignore</th>
+              <th>pending</th>
+              <th>date</th>
+              <th>id</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map(transaction => (
+              <tr key={transaction.id}>
+                <td>{transaction.name}</td>
+                <td>{transaction.amount}</td>
+                <td>{transaction.ignore ? 'true' : 'false'}</td>
+                <td>{transaction.pending ? 'true' : 'false'}</td>
+                <td>{transaction.date}</td>
+                <td>{transaction.id}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) 
+
+    }
     return (
       <div className="App">
         <div className="App-header">
-          <h2>Welcome to React</h2>
+          <h2>Welcome to the white house mr obama</h2>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
         <PlaidLink
           publicKey="0de01812c4e3a7cb3b56cd17d7b9cd"
           product="auth"
@@ -70,7 +80,7 @@ class App extends Component {
           {JSON.stringify(this.state.plaidItem)}
         </div>
         <button onClick={() => this.refreshData()}> Refresh Data </button>
-        
+        <div>{transactionsTable}</div>
       </div>
     );
   }
@@ -85,8 +95,17 @@ const addPlaidItemMutation = gql`
 `;
 
 const getTransactionsQuery = gql`
-  query getTransactions($id: ID!) {
-    transactions(userId: $id){Transaction}
+  query ($id: ID!) {
+    user(id: $id) {
+      transactions{
+        id
+        amount
+        name
+        date
+        ignore
+        pending
+      }
+    }
   }
 `;
 
@@ -94,6 +113,6 @@ const getTransactionsQuery = gql`
 export default compose (
   graphql(addPlaidItemMutation),
   graphql(getTransactionsQuery, {
-    options: { variables: { userId: 1 } },
+    options: { variables: { id: 1 } },
   })
 )(App);

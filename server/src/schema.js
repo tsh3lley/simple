@@ -44,6 +44,7 @@ type Transaction {
 	amount: Float!
 	ignore: Boolean!
 	date: Date!
+	name: String!
 }
 
 type Budget {
@@ -64,8 +65,6 @@ type PlaidItem {
 
 type Query {
 	user(id: ID!): User
-  	transactions(userId: ID!): [Transaction]
-  	budget(userId: ID!): Budget
 }
 
 type Mutation {
