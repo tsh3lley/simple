@@ -56,7 +56,7 @@ export const resolvers = {
 			const result = await Transaction.create(transaction);
 			return result;
 		},
-    updateTransaction: async (root, {id}, context) => {
+    updateTransaction: async (root, { id }, context) => {
 			var t = await Transaction.findOne({where: {id: id}});
 			const result = await t.update({ignore: !t.ignore})
 			return result;

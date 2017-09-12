@@ -1,6 +1,9 @@
 import './App.css';
 import PlaidLink from 'react-plaid-link';
 import React, { Component } from 'react';
+import { updateTransactionMutation } from './graphql/updateTransactionMutation';
+import { addPlaidItemMutation } from './graphql/addPlaidItemMutation';
+import { getTransactionsQuery } from './graphql/getTransactionsQuery';
 import { 
   gql,
   compose,
@@ -45,7 +48,6 @@ class App extends Component {
               <th>ignore</th>
               <th>pending</th>
               <th>date</th>
-              <th>id</th>
             </tr>
           </thead>
           <tbody>
@@ -56,7 +58,6 @@ class App extends Component {
                 <td>{transaction.ignore ? 'true' : 'false'}</td>
                 <td>{transaction.pending ? 'true' : 'false'}</td>
                 <td>{transaction.date}</td>
-                <td>{transaction.id}</td>
               </tr>
             ))}
           </tbody>
@@ -86,33 +87,9 @@ class App extends Component {
   }
 }
 
-const addPlaidItemMutation = gql`
-  mutation addPlaidItem($token: String!) {
-    addPlaidItem(token: $token) {
-      id
-    }
-  }
-`;
-
-const getTransactionsQuery = gql`
-  query ($id: ID!) {
-    user(id: $id) {
-      transactions{
-        id
-        amount
-        name
-        date
-        ignore
-        pending
-      }
-    }
-  }
-`;
-
 //change User ID use context.user.id
 export default compose (
-  graphql(addPlaidItemMutation),
-  graphql(getTransactionsQuery, {
-    options: { variables: { id: 1 } },
-  })
+  addPlaidItemMutation,
+  updateTransactionMutation,
+  getTransactionsQuery,
 )(App);
