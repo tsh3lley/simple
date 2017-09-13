@@ -16,7 +16,8 @@ const getTransactionsGql = gql`
 `;
 
 const getTransactionsQuery = graphql(getTransactionsGql, {
- options: { variables: { id: 1 }},
+  name: 'getTransactions',
+  options: { variables: { id: 1 }},
 });
 
 export { getTransactionsQuery };

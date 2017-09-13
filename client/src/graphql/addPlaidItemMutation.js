@@ -8,7 +8,7 @@ const addPlaidItemGql = gql`
   }
 `;
 
-const addPlaidItemMutation = graphql(addPlaidItemGql);
+const addPlaidItemMutation = graphql(addPlaidItemGql, { name: 'addPlaidItem' });
 
 export { addPlaidItemGql };
 export { addPlaidItemMutation };

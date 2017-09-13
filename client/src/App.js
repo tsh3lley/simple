@@ -4,11 +4,7 @@ import React, { Component } from 'react';
 import { updateTransactionMutation } from './graphql/updateTransactionMutation';
 import { addPlaidItemMutation } from './graphql/addPlaidItemMutation';
 import { getTransactionsQuery } from './graphql/getTransactionsQuery';
-import { 
-  gql,
-  compose,
-  graphql,
-} from 'react-apollo';
+import { compose } from 'react-apollo';
 
 class App extends Component {
   constructor(props) {
@@ -24,21 +20,25 @@ class App extends Component {
   async handleOnSuccess(token, metadata) {
     // returns public_token, which will expire in 30 minutes
     // send the public_token to the server and exchange it there for an access_token
-    const plaidItem = await this.props.mutate({ variables: { token: token }});
+    const plaidItem = await this.props.addPlaidItem({ variables: { token: token }});
     this.setState({ plaidItem });
   }
 
   async refreshData() {
-    this.props.data.refetch();
+    this.props.getTransactions.refetch();
+  }
+
+  async ignoreTransaction(transactionId) {
+    await this.props.updateTransaction({ variables: { id: transactionId }})
   }
 
   render() {
     let transactionsTable = null;
-    const { data: { loading } } = this.props;
+    const { getTransactions: { loading } } = this.props;
     if (loading) {
       transactionsTable = <h1>loading...</h1>
     } else { 
-      const { data: { user: { transactions } } } = this.props;
+      const { getTransactions: { user: { transactions } } } = this.props;
       transactionsTable = (
         <table>
           <thead>
@@ -52,7 +52,7 @@ class App extends Component {
           </thead>
           <tbody>
             {transactions.map(transaction => (
-              <tr key={transaction.id}>
+              <tr key={transaction.id} onClick={(transactionId) => this.ignoreTransaction(transaction.id)}>
                 <td>{transaction.name}</td>
                 <td>{transaction.amount}</td>
                 <td>{transaction.ignore ? 'true' : 'false'}</td>
