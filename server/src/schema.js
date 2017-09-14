@@ -65,6 +65,7 @@ type PlaidItem {
 
 type Query {
 	user(id: ID!): User
+	sumTransactions: Float!
 }
 
 type Mutation {

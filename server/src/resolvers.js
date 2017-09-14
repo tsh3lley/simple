@@ -5,6 +5,7 @@ import { JWT_SECRET, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PUBLIC_KEY, PLAID_ENV,
 import jwt from 'jsonwebtoken';
 import plaid from 'plaid';
 import moment from 'moment';
+import calcTotalSpent from './lib/calcTotalSpent';
 
 const bcrypt = bluebird.promisifyAll(require('bcrypt'));
 
@@ -31,6 +32,7 @@ export const resolvers = {
     signup: async (root, { user }) => {
       user.password = await bcrypt.hashAsync(user.password, 12);
       const result = await User.create(user);
+      await result.createBudget();
       return result;
     },
     login: async (root, { user }) => {
@@ -57,8 +59,24 @@ export const resolvers = {
 			return result;
 		},
     updateTransaction: async (root, { id }, context) => {
+      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
 			var t = await Transaction.findOne({where: {id: id}});
-			const result = await t.update({ignore: !t.ignore})
+			const result = await t.update({ignore: !t.ignore});
+      const user = await t.getUser();
+      const budget = await user.getBudget();
+
+      const transactions = await user.getTransactions({ 
+        where: {
+          date: {
+            gt: lastWeek
+          },
+          ignore: false
+        }
+      });
+
+      const transactionsSum = calcTotalSpent(transactions);
+      await budget.update({ totalSpent: transactionsSum });
+
 			return result;
     },
     addPlaidItem: async (root, { token }, context) => {
@@ -105,6 +123,7 @@ export const resolvers = {
       });
 
       const user = item.user;
+
       const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
 
@@ -129,8 +148,22 @@ export const resolvers = {
           date: transaction.date,
           name:transaction.name
         });
-        console.log(newTransaction);
       }
+
+      const transactions = await user.getTransactions({ 
+        where: {
+          date: {
+            gt: lastWeek
+          },
+          ignore: false
+        }
+      });
+
+      const transactionsSum = calcTotalSpent(transactions);
+
+      const budget = await user.getBudget();
+      await budget.update({ totalSpent: transactionsSum });
+      console.log(budget);
 
       return true;
     }

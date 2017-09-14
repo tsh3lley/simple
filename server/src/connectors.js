@@ -7,17 +7,18 @@ const db = new Sequelize('simple', null, null, {
 });
 
 const BudgetModel = db.define('budget', {
-  amtAllowed: { type: Sequelize.STRING },
+  amtAllowed: { type: Sequelize.DECIMAL(16,2), defaultValue: 0 },
+  totalSpent: { type: Sequelize.DECIMAL(16,2), defaultValue: 0 }
 });
 
 const TransactionModel = db.define('transaction', {
-  transactionId: { type: Sequelize.STRING },
+  transactionId: { type: Sequelize.STRING, unique: true },
   accountId: { type: Sequelize.STRING },
   category: { type: Sequelize.STRING },
   categoryId: { type: Sequelize.STRING },
   type: { type: Sequelize.STRING }, // cash (entered by user) or one of the plaid types
   pending: { type: Sequelize.BOOLEAN },
-  amount: { type: Sequelize.FLOAT },
+  amount: { type: Sequelize.DECIMAL(16,2) },
   ignore: { type: Sequelize.BOOLEAN },
   date: { type: Sequelize.DATE },
   name: { type: Sequelize.STRING }
@@ -38,6 +39,7 @@ const PlaidItemModel = db.define('plaidItem', {
 
 UserModel.hasMany(PlaidItemModel);
 UserModel.hasMany(TransactionModel);
+UserModel.hasOne(BudgetModel);
 
 BudgetModel.belongsTo(UserModel);
 TransactionModel.belongsTo(UserModel);

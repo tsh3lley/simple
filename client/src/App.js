@@ -63,12 +63,11 @@ class App extends Component {
           </tbody>
         </table>
       ) 
-
     }
     return (
       <div className="App">
         <div className="App-header">
-          <h2>Welcome to the white house mr obama</h2>
+          <h2>SimpleBudget</h2>
         </div>
         <PlaidLink
           publicKey="0de01812c4e3a7cb3b56cd17d7b9cd"
