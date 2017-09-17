@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
 import Yup from 'yup';
 import classNames from 'classnames';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import jsCookie from 'js-cookie';
 import { Formik } from 'formik';
+import { Route, Redirect } from 'react-router'
 import { compose, withApollo } from 'react-apollo';
 import { loginMutation } from './graphql/loginMutation';
 
@@ -62,25 +65,25 @@ LoginForm.propTypes = {
 
 export default compose(
   withApollo,
-  loginGraphql,
+  loginMutation,
   Formik({
-    validationSchema: Yup.object().shape({
-      email: Yup.string().email('Invalid email address.').required('Email is required.'),
-      password: Yup.string().required('Password is required.')
-    }),
     handleSubmit: async (values, { props: { login, client }, setErrors, setSubmitting }) => {
+      console.log(values);
       const { email, password } = values;
       try {
         const result = await login({
           variables: {
-            email,
-            password
+            user: {
+              email,
+              password
+            }
           }
         });
         const { data: { login: { token } } } = result;
         jsCookie.set('token', token);
         await client.resetStore();
-        //redirect({}, '/menu'); need to redirect
+        console.log('jews');
+        //redirect({}, '/'); need to redirect
       } catch (error) {
         setSubmitting(false);
         setErrors(error);
