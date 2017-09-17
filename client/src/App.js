@@ -1,10 +1,12 @@
 import './App.css';
-import PlaidLink from 'react-plaid-link';
-import React, { Component } from 'react';
-import { updateTransactionMutation } from './graphql/updateTransactionMutation';
-import { addPlaidItemMutation } from './graphql/addPlaidItemMutation';
-import { getTransactionsQuery } from './graphql/getTransactionsQuery';
-import { compose } from 'react-apollo';
+import PlaidLink                      from 'react-plaid-link';
+import React, { Component }           from 'react';
+import { updateTransactionMutation }  from './graphql/updateTransactionMutation';
+import { addPlaidItemMutation }       from './graphql/addPlaidItemMutation';
+import { createBudgetMutation }       from './graphql/createBudgetMutation';
+import { getTransactionsQuery }       from './graphql/getTransactionsQuery';
+import { getBudgetQuery }             from './graphql/getBudgetQuery';
+import { compose }                    from 'react-apollo';
 
 class App extends Component {
   constructor(props) {
@@ -27,16 +29,20 @@ class App extends Component {
   }
 
   async ignoreTransaction(transactionId) {
-    await this.props.updateTransaction({ variables: { id: transactionId }})
+    await this.props.updateTransaction({ variables: { id: transactionId }});
+  }
+
+  async updateBudget(event) {
+    await this.props.createBudget({ variables: { budget: { amtAllowed: event.target.value } } });
   }
 
   render() {
     let transactionsTable = null;
-    const { getTransactions: { loading } } = this.props;
-    if (loading) {
+    let transactionsLoading = this.props.getTransactions.loading;
+    if (transactionsLoading) {
       transactionsTable = <h1>loading...</h1>
     } else { 
-      const { getTransactions: { user: { transactions } } } = this.props;
+      const { user: { transactions } } = this.props.getTransactions;
       transactionsTable = (
         <table>
           <thead>
@@ -62,6 +68,16 @@ class App extends Component {
         </table>
       ) 
     }
+    let amountAllowed = null;
+    let totalSpent = null;
+    let budgetLoading = this.props.getBudget.loading;
+    if (budgetLoading) {
+      amountAllowed = <h1>loading...</h1>
+      totalSpent = <h1>loading...</h1>
+    } else { 
+      amountAllowed = this.props.getBudget.user.budget.amtAllowed;
+      totalSpent = this.props.getBudget.user.budget.totalSpent;
+    }
     return (
       <div className="App">
         <div className="App-header">
@@ -75,10 +91,22 @@ class App extends Component {
           onSuccess={(token, metadata) => this.handleOnSuccess(token,metadata)}
         />
         <div>
+          <form className="budgetInput" onSubmit={(event) => this.updateBudget(event)}>
+            <label>
+              Budget:
+              <input type="text" name="bugetAmount"/>
+            </label>
+            <input type="submit" value="Submit"/>
+          </form>
+          <h1>Budget: {amountAllowed}</h1>
+          <h1>Spent: {totalSpent}</h1>
+          <h1>Remaining: {amountAllowed - totalSpent}</h1>
+        </div>
+        <div>
           {JSON.stringify(this.state.plaidItem)}
         </div>
         <button onClick={() => this.refreshData()}> Refresh Data </button>
-        <div>{transactionsTable}</div>
+        <div className="transactionsTable">{transactionsTable}</div>
       </div>
     );
   }
@@ -88,5 +116,7 @@ class App extends Component {
 export default compose (
   addPlaidItemMutation,
   updateTransactionMutation,
+  createBudgetMutation,
   getTransactionsQuery,
+  getBudgetQuery,
 )(App);

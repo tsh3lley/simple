@@ -18,6 +18,20 @@
   font-size: large;
 }
 
+.budgetInput {
+  font-weight: bold;
+  display: flex;
+  justify-content: left;
+  align-items: left;
+}
+
+.transactionsTable {
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 table {
   text-align: left;
 }
