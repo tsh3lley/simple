@@ -46,9 +46,26 @@ export const resolvers = {
       }
       return null;
     },
-    createBudget: async (root, { budget }, context) => {
-			budget.userId = context.user.id;
-			const result = await Budget.create(budget);
+    createBudget: async (root, { budget: { amtAllowed }}, context) => {
+      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
+      //are we already using context?? if so, lit
+			//budget.userId = context.user.id;
+      const user = await User.findOne({ where: { id: 1 } });
+      const budget = await user.getBudget();
+      const transactions = await user.getTransactions({ 
+        where: {
+          date: {
+            gt: lastWeek
+          },
+          ignore: false
+        }
+      });
+      const transactionsSum = calcTotalSpent(transactions);
+
+      const result = await budget.update({ 
+        amtAllowed: amtAllowed, 
+        totalSpent: transactionsSum 
+      });
       return result;
     },
 		createTransaction: async (root, { transaction }, context) => {
@@ -59,6 +76,7 @@ export const resolvers = {
 			return result;
 		},
     updateTransaction: async (root, { id }, context) => {
+      console.log(context);
       const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
 			var t = await Transaction.findOne({where: {id: id}});
 			const result = await t.update({ignore: !t.ignore});
@@ -88,7 +106,7 @@ export const resolvers = {
       );
 
       //change this shit (id: context.user.id)
-      const user = await User.findOne({ where: { id: 1 }});
+      const user = await User.findOne({ where: { id: 1 } });
       const plaidResult = await client.exchangePublicToken(token);
       console.log(plaidResult);
       if (!plaidResult) {

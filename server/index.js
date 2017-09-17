@@ -9,6 +9,7 @@ import { createServer } from 'http';
 import { db } from './src/connectors';
 import { JWT_SECRET } from './config';
 import { graphql } from 'graphql';
+import { User } from './src/connectors'
 
 db.sync();
 
@@ -27,8 +28,8 @@ try{
     graphqlExpress(req => ({ 
       schema,
       context: {
-        user: req.user || {}
-      }
+        user: req.user ? User.findOne({ where: { id: req.user.id } }) : Promise.resolve(null),
+      },
     }))
   );
 } catch(err){

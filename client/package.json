@@ -4,15 +4,21 @@
   "private": true,
   "dependencies": {
     "axios": "^0.16.2",
+    "classnames": "^2.2.5",
+    "formik": "^0.8.9",
+    "js-cookie": "^2.1.4",
     "material-ui": "^0.19.1",
+    "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-apollo": "^1.4.15",
     "react-dom": "^15.6.1",
-    "react-plaid-link": "^0.1.9",
-    "react-scripts": "1.0.13",
     "react-dropzone": "^3.10.0",
+    "react-plaid-link": "^0.1.9",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.13",
     "react-tap-event-plugin": "^2.0.1",
-    "superagent": "^3.4.4"
+    "superagent": "^3.4.4",
+    "yup": "^0.22.0"
   },
   "scripts": {
     "start": "react-scripts start",

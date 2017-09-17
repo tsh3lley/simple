@@ -50,7 +50,7 @@ type Transaction {
 type Budget {
 	id: ID!
 	amtAllowed: Float!
-	amtRemaining: Float!
+	totalSpent: Float!
 }
 
 type Token {
