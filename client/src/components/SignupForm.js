@@ -6,8 +6,8 @@ import { Formik } from 'formik';
 import { compose } from 'react-apollo';
 import React, { Component } from 'react';
 import jsCookie from 'js-cookie';
-import { signupMutation } from './graphql/signupMutation';
-import { loginMutation } from './graphql/loginMutation';
+import { signupMutation } from '../graphql/signupMutation';
+import { loginMutation } from '../graphql/loginMutation';
 
 const SignupForm = (props) => {
   const {

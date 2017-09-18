@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { compose } from 'react-apollo';
-import SignupForm from './SignupForm';
+import SignupForm from '../compoents/SignupForm';
 
 class Signup extends Component {
   render() {

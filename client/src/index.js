@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './components/App';
 import registerServiceWorker from './registerServiceWorker';
 import jsCookie from 'js-cookie';
 import { BrowserRouter } from 'react-router-dom'
-import { Switch, Route, Redirect }    from 'react-router-dom'
-import Login                          from './login'
+import { Switch, Route, Redirect } from 'react-router-dom'
+import Login from './pages/login'
 import { 
   ApolloClient,
   ApolloProvider,

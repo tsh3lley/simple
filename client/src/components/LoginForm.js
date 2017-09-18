@@ -7,7 +7,7 @@ import jsCookie from 'js-cookie';
 import { Formik } from 'formik';
 import { Route, Redirect } from 'react-router'
 import { compose, withApollo } from 'react-apollo';
-import { loginMutation } from './graphql/loginMutation';
+import { loginMutation } from '../graphql/loginMutation';
 
 const LoginForm = ({
   values,
