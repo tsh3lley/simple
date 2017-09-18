@@ -3,6 +3,7 @@ import { gql, graphql } from 'react-apollo'
 const createBudgetGql = gql`
   mutation createBudget($budget: CreateBudgetInput!) {
     createBudget(budget: $budget) {
+      id
       amtAllowed
       totalSpent
     }

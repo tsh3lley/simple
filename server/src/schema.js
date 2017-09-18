@@ -11,7 +11,6 @@ scalar Date
 input SigninUserInput {
 	email: String!
 	password: String!
-	name: String
 }
 
 input CreateBudgetInput {

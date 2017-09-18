@@ -47,6 +47,7 @@ export const resolvers = {
       return null;
     },
     createBudget: async (root, { budget: { amtAllowed }}, context) => {
+      console.log(amtAllowed);
       const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
       //are we already using context?? if so, lit
 			//budget.userId = context.user.id;
