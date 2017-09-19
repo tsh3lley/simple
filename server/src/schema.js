@@ -8,6 +8,12 @@ import { resolvers } from './resolvers';
 const typeDefs = `
 scalar Date
 
+input SignupUserInput {
+	email: String!
+	password: String!
+  name: String!
+}
+
 input SigninUserInput {
 	email: String!
 	password: String!
@@ -19,7 +25,7 @@ input CreateBudgetInput {
 
 input CreateTransactionInput {
   type: String!
-  description: String!
+  name: String!
   amount: Float!
 }
 
@@ -56,19 +62,19 @@ type Token {
 	token: String!
 }
 
-type PlaidItem { 
+type PlaidItem {
 	id: ID!
 	token: String!
 	itemId: String!
 }
 
 type Query {
-	user(id: ID!): User
+	user: User
 	sumTransactions: Float!
 }
 
 type Mutation {
-	signup(user: SigninUserInput!): User
+	signup(user: SignupUserInput!): User
 	login(user: SigninUserInput!): Token
 	createBudget(budget: CreateBudgetInput!): Budget
   	createTransaction(transaction: CreateTransactionInput!): Transaction

@@ -12,20 +12,25 @@ const bcrypt = bluebird.promisifyAll(require('bcrypt'));
 export const resolvers = {
 	Date: GraphQLDate,
 	Query: {
-		user(root, args) {
-		 	return User.findOne({where: args});
+		// How to make this async?
+		user(root, {}, context) {
+			console.log('Getting user');
+		 	User.findOne({where: { id: context.user.id }}).then(user => {
+				return user;
+			});
 		},
 	},
 	User: {
     transactions(user) {
-      console.log(user);
     	return Transaction.findAll({
 	      where: { userId: user.id },
 	      order: [['date', 'DESC']],
       });
     },
     budget(user) {
-    	return user.getBudget();
+			console.log(user);
+			console.log('Getting budget');
+    	return user;
     },
 	},
   Mutation: {
@@ -47,13 +52,10 @@ export const resolvers = {
       return null;
     },
     createBudget: async (root, { budget: { amtAllowed }}, context) => {
-      console.log(amtAllowed);
       const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
-      //are we already using context?? if so, lit
-			//budget.userId = context.user.id;
-      const user = await User.findOne({ where: { id: 1 } });
+      const user = await User.findOne({ where: { id: context.user.id } });
       const budget = await user.getBudget();
-      const transactions = await user.getTransactions({ 
+      const transactions = await user.getTransactions({
         where: {
           date: {
             gt: lastWeek
@@ -63,9 +65,9 @@ export const resolvers = {
       });
       const transactionsSum = calcTotalSpent(transactions);
 
-      const result = await budget.update({ 
-        amtAllowed: amtAllowed, 
-        totalSpent: transactionsSum 
+      const result = await budget.update({
+        amtAllowed: amtAllowed,
+        totalSpent: transactionsSum
       });
       return result;
     },
@@ -73,6 +75,9 @@ export const resolvers = {
 			transaction.userId = context.user.id;
 			transaction.date = Date.now();
 			transaction.ignore = false;
+			transaction.pending = false;
+			transaction.category = '';
+			transaction.categoryId = '';
 			const result = await Transaction.create(transaction);
 			return result;
 		},
@@ -84,7 +89,7 @@ export const resolvers = {
       const user = await t.getUser();
       const budget = await user.getBudget();
 
-      const transactions = await user.getTransactions({ 
+      const transactions = await user.getTransactions({
         where: {
           date: {
             gt: lastWeek
@@ -107,7 +112,7 @@ export const resolvers = {
       );
 
       //change this shit (id: context.user.id)
-      const user = await User.findOne({ where: { id: 1 } });
+      const user = await User.findOne({ where: { id: context.user.id } });
       const plaidResult = await client.exchangePublicToken(token);
       console.log(plaidResult);
       if (!plaidResult) {
@@ -116,10 +121,10 @@ export const resolvers = {
         return null;
       }
 
-      const result = await PlaidItem.create({ 
-        itemId: plaidResult.item_id, 
-        token: plaidResult.access_token, 
-        userId: user.id, 
+      const result = await PlaidItem.create({
+        itemId: plaidResult.item_id,
+        token: plaidResult.access_token,
+        userId: user.id,
       });
       console.log(result);
       const webhookResult = await client.updateItemWebhook(plaidResult.access_token, WEBHOOK_URL);
@@ -137,7 +142,7 @@ export const resolvers = {
       );
 
       const item = await PlaidItem.findOne({
-        where: {itemId: itemId}, 
+        where: {itemId: itemId},
         include: User,
       });
 
@@ -147,10 +152,10 @@ export const resolvers = {
       const today = moment().format('YYYY-MM-DD');
 
       const result = await client.getTransactions(
-        item.token, 
-        lastWeek, 
-        today, 
-      );  
+        item.token,
+        lastWeek,
+        today,
+      );
 
       for (var transaction of result.transactions) {
         const transAmt = parseFloat(transaction.amount);
@@ -169,7 +174,7 @@ export const resolvers = {
         });
       }
 
-      const transactions = await user.getTransactions({ 
+      const transactions = await user.getTransactions({
         where: {
           date: {
             gt: lastWeek
