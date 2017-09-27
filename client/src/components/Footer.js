@@ -8,10 +8,10 @@ const Footer = () => (
       <div>
         <p className='m-0'>
           <span>Made in &nbsp;</span>
-          <FontAwesome name='fa fa-sun-o' style={{ color: '#DAA520' }} />
+          <FontAwesome name='sun-o' style={{ color: '#DAA520' }} />
           <span>&nbsp;s u n n y&nbsp;</span>
-          <FontAwesome name='fa fa-sun-o' style={{ color: '#DAA520' }} />
-          <span>&nbsp;in San Francisco.</span>
+          <FontAwesome name='sun-o' style={{ color: '#DAA520' }} />
+          <span>&nbsp;San Francisco.</span>
         </p>
       </div>
     </div>

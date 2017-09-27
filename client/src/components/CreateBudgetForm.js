@@ -20,7 +20,7 @@ const CreateBudgetForm = ({
     <label htmlFor="budget">Budget</label>
     <input
       id="budget"
-      placeholder="Weekly Budget Amount"
+      placeholder="Weekly Bdget Amount"
       type="number"
       value={values.budget}
       onChange={handleChange}

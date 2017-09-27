@@ -9,6 +9,8 @@ import calcTotalSpent from './lib/calcTotalSpent';
 
 const bcrypt = bluebird.promisifyAll(require('bcrypt'));
 
+// if there are any errors in this file it probably has to do with 'days'
+
 export const resolvers = {
 	Date: GraphQLDate,
 	Query: {
@@ -48,7 +50,7 @@ export const resolvers = {
     },
     createBudget: async (root, { budget: { amtAllowed }}, context) => {
       console.log(amtAllowed);
-      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
+      const days = moment().day() - moment().day(1).day();
       //are we already using context?? if so, lit
 			//budget.userId = context.user.id;
       const user = await User.findOne({ where: { id: 1 } });
@@ -56,7 +58,7 @@ export const resolvers = {
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: lastWeek
+            gt: days
           },
           ignore: false
         }
@@ -77,8 +79,7 @@ export const resolvers = {
 			return result;
 		},
     updateTransaction: async (root, { id }, context) => {
-      console.log(context);
-      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
+      const days = moment().day() - moment().day(1).day();  
 			var t = await Transaction.findOne({where: {id: id}});
 			const result = await t.update({ignore: !t.ignore});
       const user = await t.getUser();
@@ -87,7 +88,7 @@ export const resolvers = {
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: lastWeek
+            gt: days
           },
           ignore: false
         }
@@ -143,12 +144,12 @@ export const resolvers = {
 
       const user = item.user;
 
-      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
+      const days = moment().day() - moment().day(1).day();
       const today = moment().format('YYYY-MM-DD');
 
       const result = await client.getTransactions(
         item.token, 
-        lastWeek, 
+        days, 
         today, 
       );  
 
@@ -172,7 +173,7 @@ export const resolvers = {
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: lastWeek
+            gt: days
           },
           ignore: false
         }
