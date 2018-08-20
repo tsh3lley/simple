@@ -6,6 +6,7 @@ import CreateBudgetForm from './CreateBudgetForm';
 import TransactionsTable from './TransactionsTable';
 import BudgetStats from './BudgetStats';
 import { compose } from 'react-apollo';
+import Footer from './Footer';
 
 class App extends Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class App extends Component {
           {JSON.stringify(this.state.plaidItem)}
         </div>
         <TransactionsTable />
+        <Footer />
       </div>
     );
   }

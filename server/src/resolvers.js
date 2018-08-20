@@ -9,6 +9,8 @@ import calcTotalSpent from './lib/calcTotalSpent';
 
 const bcrypt = bluebird.promisifyAll(require('bcrypt'));
 
+// if there are any errors in this file it probably has to do with 'days'
+
 export const resolvers = {
 	Date: GraphQLDate,
 	Query: {
@@ -48,7 +50,7 @@ export const resolvers = {
     },
     createBudget: async (root, { budget: { amtAllowed }}, context) => {
       console.log(amtAllowed);
-      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
+      const days = moment().day() - moment().day(1).day();
       //are we already using context?? if so, lit
 			//budget.userId = context.user.id;
       const user = await User.findOne({ where: { id: 1 } });
@@ -56,7 +58,7 @@ export const resolvers = {
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: lastWeek
+            gt: days
           },
           ignore: false
         }
@@ -77,8 +79,7 @@ export const resolvers = {
 			return result;
 		},
     updateTransaction: async (root, { id }, context) => {
-      console.log(context);
-      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
+      const days = moment().day() - moment().day(1).day();  
 			var t = await Transaction.findOne({where: {id: id}});
 			const result = await t.update({ignore: !t.ignore});
       const user = await t.getUser();
@@ -87,7 +88,7 @@ export const resolvers = {
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: lastWeek
+            gt: days
           },
           ignore: false
         }
@@ -129,6 +130,7 @@ export const resolvers = {
     refreshTransactionsWebhook: async (root, { itemId, numTransactions, webhookCode }) => {
       //plaid webhook hits our endpoint telling it that info has changed,
       //handle the result here
+      console.log('webhook');
       const client = new plaid.Client(
         PLAID_CLIENT_ID,
         PLAID_SECRET,
@@ -142,16 +144,17 @@ export const resolvers = {
       });
 
       const user = item.user;
-
-      const lastWeek = moment().subtract(7,'days').format('YYYY-MM-DD');
+      const days = 365
+      const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
+      console.log('2')
 
       const result = await client.getTransactions(
         item.token, 
-        lastWeek, 
+        startDate, 
         today, 
       );  
-
+      console.log('3')
       for (var transaction of result.transactions) {
         const transAmt = parseFloat(transaction.amount);
         const transDate = moment(transaction.date).format('YYYY-MM-DD');
@@ -168,11 +171,11 @@ export const resolvers = {
           name:transaction.name
         });
       }
-
+      console.log('4')
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: lastWeek
+            gt: days
           },
           ignore: false
         }

@@ -13,10 +13,12 @@
     "react-apollo": "^1.4.15",
     "react-dom": "^15.6.1",
     "react-dropzone": "^3.10.0",
+    "react-fontawesome": "^1.6.1",
     "react-plaid-link": "^0.1.9",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.13",
     "react-tap-event-plugin": "^2.0.1",
+    "react-weekday-picker": "^1.0.8",
     "superagent": "^3.4.4",
     "yup": "^0.22.0"
   },
