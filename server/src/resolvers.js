@@ -130,6 +130,7 @@ export const resolvers = {
     refreshTransactionsWebhook: async (root, { itemId, numTransactions, webhookCode }) => {
       //plaid webhook hits our endpoint telling it that info has changed,
       //handle the result here
+      console.log('webhook');
       const client = new plaid.Client(
         PLAID_CLIENT_ID,
         PLAID_SECRET,
@@ -143,16 +144,17 @@ export const resolvers = {
       });
 
       const user = item.user;
-
-      const days = moment().day() - moment().day(1).day();
+      const days = 365
+      const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
+      console.log('2')
 
       const result = await client.getTransactions(
         item.token, 
-        days, 
+        startDate, 
         today, 
       );  
-
+      console.log('3')
       for (var transaction of result.transactions) {
         const transAmt = parseFloat(transaction.amount);
         const transDate = moment(transaction.date).format('YYYY-MM-DD');
@@ -169,7 +171,7 @@ export const resolvers = {
           name:transaction.name
         });
       }
-
+      console.log('4')
       const transactions = await user.getTransactions({ 
         where: {
           date: {

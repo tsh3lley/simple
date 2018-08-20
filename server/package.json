@@ -16,19 +16,19 @@
     "babel-preset-stage-2": "^6.24.1",
     "eslint": "^4.4.1",
     "eslint-config-airbnb": "^15.1.0",
-    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.2.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.18.3"
   },
   "dependencies": {
-    "bcrypt": "^1.0.2",
+    "bcrypt": "^3.0.0",
     "bluebird": "^3.5.0",
-    "body-parser": "^1.17.1",
+    "body-parser": "^1.18.3",
     "cors": "^2.8.3",
     "dotenv": "^4.0.0",
-    "express": "^4.15.2",
-    "express-jwt": "^5.3.0",
+    "express": "^4.16.3",
+    "express-jwt": "^5.3.1",
     "graphql": "^0.10.1",
     "graphql-date": "^1.0.3",
     "graphql-server-core": "^0.8.2",
@@ -36,13 +36,14 @@
     "graphql-server-module-graphiql": "^0.8.2",
     "graphql-subscriptions": "^0.4.3",
     "graphql-tools": "^1.0.0",
-    "jsonwebtoken": "^7.4.1",
-    "lodash": "^4.17.4",
-    "moment": "^2.18.1",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.2",
     "plaid": "^2.0.5",
-    "sequelize": "^4.4.2",
-    "sqlite3": "^3.1.8",
+    "sequelize": "^4.38.0",
+    "sqlite3": "^4.0.2",
     "subscriptions-transport-ws": "^0.7.3",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "yarn": "^1.9.4"
   }
 }
