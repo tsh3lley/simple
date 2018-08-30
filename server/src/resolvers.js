@@ -5,11 +5,10 @@ import { JWT_SECRET, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PUBLIC_KEY, PLAID_ENV,
 import jwt from 'jsonwebtoken';
 import plaid from 'plaid';
 import moment from 'moment';
+import { UserError } from 'graphql-errors'
 import calcTotalSpent from './lib/calcTotalSpent';
 
 const bcrypt = bluebird.promisifyAll(require('bcrypt'));
-
-// if there are any errors in this file it probably has to do with 'days'
 
 export const resolvers = {
 	Date: GraphQLDate,
@@ -32,21 +31,40 @@ export const resolvers = {
 	},
   Mutation: {
     signup: async (root, { user }) => {
+      //need to add context
+      console.log(user);
       user.password = await bcrypt.hashAsync(user.password, 12);
-      const result = await User.create(user);
-      await result.createBudget();
-      return result;
+      try {
+        const signupUser = await User.create(user);
+        await signupUser.createBudget();
+        const token = jwt.sign({ id: signupUser.id }, JWT_SECRET);
+        return {
+          token: token
+        }
+      } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+          if (error.parent.constraint === 'user_email_key') {
+            throw new UserError('Email is already taken.');
+          }
+        }
+      }
+      return null;
     },
     login: async (root, { user }) => {
+      //need to add context (to read token)
       const loggingInUser = await User.findOne({ where: { email: user.email }});
+      if (loggingInUser === null){
+        throw new UserError('Invalid email');
+      } 
       const result = await bcrypt.compareAsync(user.password, loggingInUser.password);
       if (result) {
         const token = jwt.sign({ id: loggingInUser.id }, JWT_SECRET);
         return {
           token: token
         }
+      } else {
+        throw new UserError('Invalid password') //make this ambiguous so they dont learn PW
       }
-      return null;
     },
     createBudget: async (root, { budget: { amtAllowed }}, context) => {
       console.log(amtAllowed);
@@ -144,7 +162,7 @@ export const resolvers = {
       });
 
       const user = item.user;
-      const days = 365
+      const days = 30
       const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
       console.log('2')
@@ -175,7 +193,7 @@ export const resolvers = {
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: days
+            gt: startDate
           },
           ignore: false
         }

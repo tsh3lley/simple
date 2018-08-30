@@ -82,7 +82,7 @@ export default compose(
         const { data: { login: { token } } } = result;
         jsCookie.set('token', token);
         await client.resetStore();
-        console.log('jews');
+        console.log('fun');
         //redirect({}, '/'); need to redirect
       } catch (error) {
         setSubmitting(false);
