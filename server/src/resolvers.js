@@ -30,14 +30,14 @@ export const resolvers = {
     },
 	},
   Mutation: {
-    signup: async (root, { input }) => {
+    signup: async (root, { user }) => {
       //need to add context
-      console.log(input);
-      input.password = await bcrypt.hashAsync(input.password, 12);
+      console.log(user);
+      user.password = await bcrypt.hashAsync(user.password, 12);
       try {
-        const user = await User.create(input);
-        await user.createBudget();
-        const token = jwt.sign({ id: user.id }, JWT_SECRET);
+        const signupUser = await User.create(user);
+        await signupUser.createBudget();
+        const token = jwt.sign({ id: signupUser.id }, JWT_SECRET);
         return {
           token: token
         }
@@ -50,15 +50,15 @@ export const resolvers = {
       }
       return null;
     },
-    login: async (root, { input }) => {
+    login: async (root, { user }) => {
       //need to add context (to read token)
-      const user = await User.findOne({ where: { email: input.email }});
-      if (user === null){
+      const loggingInUser = await User.findOne({ where: { email: user.email }});
+      if (loggingInUser === null){
         throw new UserError('Invalid email');
       } 
-      const result = await bcrypt.compareAsync(input.password, user.password);
+      const result = await bcrypt.compareAsync(user.password, loggingInUser.password);
       if (result) {
-        const token = jwt.sign({ id: user.id }, JWT_SECRET);
+        const token = jwt.sign({ id: loggingInUser.id }, JWT_SECRET);
         return {
           token: token
         }
