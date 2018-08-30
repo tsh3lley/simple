@@ -6,6 +6,7 @@ import jsCookie from 'js-cookie';
 import { BrowserRouter } from 'react-router-dom'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import Login from './pages/login'
+import Signup from './pages/signup'
 import { 
   ApolloClient,
   ApolloProvider,
@@ -33,6 +34,7 @@ ReactDOM.render(
       <Switch>
         <Route exact path='/' component={App}/>
         <Route exact path='/login' component={Login}/>
+        <Route exact path='/signup' component={Signup}/>
       </Switch>
     </BrowserRouter>
   </ApolloProvider>, 

@@ -68,7 +68,7 @@ type Query {
 }
 
 type Mutation {
-	signup(user: SigninUserInput!): User
+	signup(user: SigninUserInput!): Token
 	login(user: SigninUserInput!): Token
 	createBudget(budget: CreateBudgetInput!): Budget
   	createTransaction(transaction: CreateTransactionInput!): Transaction
