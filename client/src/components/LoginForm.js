@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Yup from 'yup';
 import classNames from 'classnames';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import jsCookie from 'js-cookie';
 import { Formik } from 'formik';
 import { Route, Redirect } from 'react-router'
@@ -45,7 +45,7 @@ const LoginForm = ({
       </button>
     </div>
     <div className='pt-1 text-center'>
-      <span>Don&#39;t have an account? <Link to='/signup'><a>Signup</a></Link></span>
+      <span>Don&#39;t have an account? <Link to='/signup'>Signup</Link></span>
     </div>
   </form>
 );
@@ -65,10 +65,10 @@ LoginForm.propTypes = {
 
 export default compose(
   withApollo,
+  withRouter,
   loginMutation,
   Formik({
-    handleSubmit: async (values, { props: { login, client }, setErrors, setSubmitting }) => {
-      console.log(values);
+    handleSubmit: async (values, { props: { login, client, history }, setErrors, setSubmitting }) => {
       const { email, password } = values;
       try {
         const result = await login({
@@ -82,8 +82,7 @@ export default compose(
         const { data: { login: { token } } } = result;
         jsCookie.set('token', token);
         await client.resetStore();
-        console.log('fun');
-        //redirect({}, '/'); need to redirect
+        history.push('/');
       } catch (error) {
         setSubmitting(false);
         setErrors(error);
