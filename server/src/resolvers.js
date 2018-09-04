@@ -66,13 +66,14 @@ export const resolvers = {
         throw new UserError('Invalid password') //make this ambiguous so they dont learn PW
       }
     },
-    createBudget: async (root, { budget: { amtAllowed }}, context) => {
-      console.log(amtAllowed);
+    createBudget: async (root, { budget }, context) => {
+      console.log(budget.amtAllowed);
       const days = moment().day() - moment().day(1).day();
       //are we already using context?? if so, lit
+      console.log(context);
 			//budget.userId = context.user.id;
       const user = await User.findOne({ where: { id: 1 } });
-      const budget = await user.getBudget();
+      const newBudget = await user.getBudget();
       const transactions = await user.getTransactions({ 
         where: {
           date: {
@@ -83,8 +84,8 @@ export const resolvers = {
       });
       const transactionsSum = calcTotalSpent(transactions);
 
-      const result = await budget.update({ 
-        amtAllowed: amtAllowed, 
+      const result = await newBudget.update({ 
+        amtAllowed: budget.amtAllowed, 
         totalSpent: transactionsSum 
       });
       return result;
