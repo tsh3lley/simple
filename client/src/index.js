@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import App from './components/App';
 import registerServiceWorker from './registerServiceWorker';
 import jsCookie from 'js-cookie';
-import { BrowserRouter } from 'react-router-dom'
-import { Switch, Route, Redirect } from 'react-router-dom'
-import Login from './pages/login'
-import Signup from './pages/signup'
+import { BrowserRouter } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import Login from './pages/login';
+import Signup from './pages/signup';
+import PageNotFound from './components/PageNotFound';
+import AuthorizedRoute from './lib/AuthorizedRoute';
 import { 
   ApolloClient,
   ApolloProvider,
@@ -32,9 +34,10 @@ ReactDOM.render(
   <ApolloProvider client = {client}>
     <BrowserRouter>      
       <Switch>
-        <Route exact path='/' component={App}/>
+        <AuthorizedRoute exact path='/' component={App}/>
         <Route exact path='/login' component={Login}/>
         <Route exact path='/signup' component={Signup}/>
+        <Route component={PageNotFound}/>
       </Switch>
     </BrowserRouter>
   </ApolloProvider>, 
