@@ -25,7 +25,7 @@
 9. run `yarn start`
 10. a client should popup on http://localhost:3000
 
-###Site
+### Site
 11. visit `http://localhost:3000/signup` and create a new user
   - check the db browser to confirm you can see this new user in the user table
 12. you should now be seeing the simplebudget homepage, including a blank budget, transactions,etc
@@ -36,6 +36,8 @@
 16. use postman to send the following request to your server running on port 4000:
 
 method=POST
+
+URL=`http://localhost:4000/webhook`
 
 body:
 ```
