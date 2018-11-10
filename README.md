@@ -49,4 +49,3 @@ body:
 ```
 17. chill out for a sec and re-read the [plaid quickstart docs](https://plaid.com/docs/quickstart/). it can take plaid some time to get the txns for a new item id. if you dont get the transactions list loaded into the db after this request, wait a bit and try again
 18. click the 'refresh' transactions button. you should now have all the transaction data loaded into simplebudget :^)
-19. blow dro
