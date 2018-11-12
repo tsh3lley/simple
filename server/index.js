@@ -26,7 +26,10 @@ try{
         credentialsRequired: false
     }),
     graphqlExpress(req => ({ 
-      schema
+      schema,
+      context: {
+        user: req.user
+      },
     }))
   );
 } catch(err){

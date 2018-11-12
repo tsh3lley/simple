@@ -50,8 +50,6 @@ export const resolvers = {
       return null;
     },
     login: async (root, { user }) => {
-      //need to add context (to read token)
-      console.log('it wroked')
       const loggingInUser = await User.findOne({ where: { email: user.email }});
       if (loggingInUser === null){
         throw new UserError('Invalid email');
@@ -67,13 +65,8 @@ export const resolvers = {
       }
     },
     createBudget: async (root, { budget }, context) => {
-      console.log(budget.amtAllowed);
-      console.log('context~~~')
       const days = moment().day() - moment().day(1).day();
-      //are we already using context?? if so, lit
-      console.log(context);
-			//budget.userId = context.user.id;
-      const user = await User.findOne({ where: { id: 1 } });
+      const user = await User.findOne({ where: { id: context.user.id } });
       const newBudget = await user.getBudget();
       const transactions = await user.getTransactions({ 
         where: {
@@ -127,8 +120,7 @@ export const resolvers = {
         plaid.environments[PLAID_ENV],
       );
 
-      //change this shit (id: context.user.id)
-      const user = await User.findOne({ where: { id: 1 } });
+      const user = await User.findOne({ where: { id: context.user.id } });
       const plaidResult = await client.exchangePublicToken(token);
       console.log(plaidResult);
       if (!plaidResult) {
@@ -142,7 +134,6 @@ export const resolvers = {
         token: plaidResult.access_token, 
         userId: user.id, 
       });
-      console.log(result);
       const webhookResult = await client.updateItemWebhook(plaidResult.access_token, WEBHOOK_URL);
       console.log(webhookResult);
       return result;
@@ -167,14 +158,13 @@ export const resolvers = {
       const days = 30
       const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
-      console.log('2')
 
       const result = await client.getTransactions(
         item.token, 
         startDate, 
         today, 
       );  
-      console.log('3')
+
       for (var transaction of result.transactions) {
         const transAmt = parseFloat(transaction.amount);
         const transDate = moment(transaction.date).format('YYYY-MM-DD');
@@ -191,7 +181,7 @@ export const resolvers = {
           name:transaction.name
         });
       }
-      console.log('4')
+
       const transactions = await user.getTransactions({ 
         where: {
           date: {
