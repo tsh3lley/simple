@@ -15,6 +15,7 @@ const getTransactionsGql = gql`
   }
 `;
 
+//TODO - fix this so ID is not hardcoded - use context instead of variables
 const getTransactionsQuery = graphql(getTransactionsGql, {
   name: 'getTransactions',
   options: { variables: { id: 1 }},

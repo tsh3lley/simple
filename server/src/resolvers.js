@@ -19,7 +19,6 @@ export const resolvers = {
 	},
 	User: {
     transactions(user) {
-      console.log(user);
     	return Transaction.findAll({
 	      where: { userId: user.id },
 	      order: [['date', 'DESC']],
@@ -77,7 +76,6 @@ export const resolvers = {
         }
       });
       const transactionsSum = calcTotalSpent(transactions);
-
       const result = await newBudget.update({ 
         amtAllowed: budget.amtAllowed, 
         totalSpent: transactionsSum 
@@ -97,8 +95,8 @@ export const resolvers = {
 			const result = await t.update({ignore: !t.ignore});
       const user = await t.getUser();
       const budget = await user.getBudget();
-
-      const transactions = await user.getTransactions({ 
+      console.log('update')
+      const relevantTransactions = await user.getTransactions({ 
         where: {
           date: {
             gt: days
@@ -106,10 +104,8 @@ export const resolvers = {
           ignore: false
         }
       });
-
-      const transactionsSum = calcTotalSpent(transactions);
+      const transactionsSum = calcTotalSpent(relevantTransactions);
       await budget.update({ totalSpent: transactionsSum });
-
 			return result;
     },
     addPlaidItem: async (root, { token }, context) => {
@@ -119,23 +115,19 @@ export const resolvers = {
         PLAID_PUBLIC_KEY,
         plaid.environments[PLAID_ENV],
       );
-
       const user = await User.findOne({ where: { id: context.user.id } });
       const plaidResult = await client.exchangePublicToken(token);
-      console.log(plaidResult);
       if (!plaidResult) {
         const msg = 'Could not exchange public_token!';
         console.log(`${msg}\n${error}`);
         return null;
       }
-
       const result = await PlaidItem.create({ 
         itemId: plaidResult.item_id, 
         token: plaidResult.access_token, 
         userId: user.id, 
       });
       const webhookResult = await client.updateItemWebhook(plaidResult.access_token, WEBHOOK_URL);
-      console.log(webhookResult);
       return result;
     },
     refreshTransactionsWebhook: async (root, { itemId, numTransactions, webhookCode }) => {
@@ -148,27 +140,22 @@ export const resolvers = {
         PLAID_PUBLIC_KEY,
         plaid.environments[PLAID_ENV],
       );
-
       const item = await PlaidItem.findOne({
         where: {itemId: itemId}, 
         include: User,
       });
-
       const user = item.user;
       const days = 30
       const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
-
       const result = await client.getTransactions(
         item.token, 
         startDate, 
         today, 
       );  
-
       for (var transaction of result.transactions) {
         const transAmt = parseFloat(transaction.amount);
         const transDate = moment(transaction.date).format('YYYY-MM-DD');
-
         let newTransaction = await user.createTransaction({
           transactionId: transaction.transaction_id,
           accountId: transaction.account_id,
@@ -181,7 +168,6 @@ export const resolvers = {
           name:transaction.name
         });
       }
-
       const transactions = await user.getTransactions({ 
         where: {
           date: {
@@ -190,13 +176,9 @@ export const resolvers = {
           ignore: false
         }
       });
-
       const transactionsSum = calcTotalSpent(transactions);
-
       const budget = await user.getBudget();
       await budget.update({ totalSpent: transactionsSum });
-      console.log(budget);
-
       return true;
     }
   },
