@@ -53,7 +53,8 @@ server.post('/webhook', async (req, res) => {
   `
   res.send(null);
   const transactionsResult = await graphql(schema, webhookMutation);
-  console.log(transactionsResult);
+  console.log('webhook hit')
+  //console.log(transactionsResult);
 });
 
 

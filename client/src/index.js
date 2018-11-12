@@ -10,28 +10,36 @@ import Signup from './pages/signup';
 import PageNotFound from './components/PageNotFound';
 import AuthorizedRoute from './lib/AuthorizedRoute';
 import _ from 'lodash';
-import { 
-  ApolloClient,
-  ApolloProvider,
-  createNetworkInterface,
-} from 'react-apollo';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from "apollo-link";
+import { createHttpLink } from "apollo-link-http";
+import { ApolloProvider } from 'react-apollo';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
-const networkInterface = createNetworkInterface({ uri: 'http://localhost:4000/graphql' });
-
-networkInterface.use([{
-  applyMiddleware(req, next) {
-    if (!req.options.headers) {
-      req.options.headers = {}
-    }
-    const token = jsCookie.get(token);
+const httpLink = createHttpLink({ uri: "http://localhost:4000/graphql" });
+const middlewareLink = new ApolloLink((operation, forward) => {
+  const token = jsCookie.get(token);
+  console.log(token);
     if (!_.isEmpty(token)) {
-      req.options.headers.Authorization = `Bearer ${token.token}`
+      operation.setContext({
+        headers: {
+          Authorization: `Bearer ${token.token}`
+        }
+      });
+/*      operation.setContext({
+        headers: {
+          Authorization: `Bearer ${token.token}`
+        }
+      });*/
     }
-    next();
-  }
-}]);
+  return forward(operation);
+});
 
-const client = new ApolloClient({ networkInterface: networkInterface });
+// use with apollo-client
+const link = middlewareLink.concat(httpLink);
+const cache = new InMemoryCache();
+
+const client = new ApolloClient({ cache, link });
 
 ReactDOM.render(
   <ApolloProvider client = {client}>

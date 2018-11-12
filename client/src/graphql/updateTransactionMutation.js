@@ -1,4 +1,6 @@
-import { gql, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag';
+import { getBudgetQuery } from '../graphql/getBudgetQuery';
 
 const updateTransactionGql= gql`
   mutation($id: ID!) {
@@ -9,7 +11,14 @@ const updateTransactionGql= gql`
   }
 `;
 
-const updateTransactionMutation = graphql(updateTransactionGql, { name: 'updateTransaction' });
+const updateTransactionMutation = graphql(updateTransactionGql, {
+  name: 'updateTransaction',
+  options: {
+    refetchQueries: [{
+      query: getBudgetQuery
+    }]
+  }
+});
 
 export { updateTransactionMutation };
 export { updateTransactionGql };
