@@ -31,7 +31,6 @@ export const resolvers = {
 	},
   Mutation: {
     signup: async (root, { user }) => {
-      //need to add context
       console.log(user);
       user.password = await bcrypt.hashAsync(user.password, 12);
       try {
@@ -52,6 +51,7 @@ export const resolvers = {
     },
     login: async (root, { user }) => {
       //need to add context (to read token)
+      console.log('it wroked')
       const loggingInUser = await User.findOne({ where: { email: user.email }});
       if (loggingInUser === null){
         throw new UserError('Invalid email');
@@ -68,6 +68,7 @@ export const resolvers = {
     },
     createBudget: async (root, { budget }, context) => {
       console.log(budget.amtAllowed);
+      console.log('context~~~')
       const days = moment().day() - moment().day(1).day();
       //are we already using context?? if so, lit
       console.log(context);

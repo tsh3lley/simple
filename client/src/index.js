@@ -9,6 +9,7 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import PageNotFound from './components/PageNotFound';
 import AuthorizedRoute from './lib/AuthorizedRoute';
+import _ from 'lodash';
 import { 
   ApolloClient,
   ApolloProvider,
@@ -17,16 +18,18 @@ import {
 
 const networkInterface = createNetworkInterface({ uri: 'http://localhost:4000/graphql' });
 
-// networkInterface.use([{
-//   applyMiddleware(req, next) {
-//     if (!req.options.headers) {
-//       req.options.headers = {}
-//     }
-//     const token = jsCookie.get(token);
-//     req.options.headers.authorization = token ? `Bearer ${token}` : null
-//     next();
-//   }
-// }]);
+networkInterface.use([{
+  applyMiddleware(req, next) {
+    if (!req.options.headers) {
+      req.options.headers = {}
+    }
+    const token = jsCookie.get(token);
+    if (!_.isEmpty(token)) {
+      req.options.headers.Authorization = `Bearer ${token.token}`
+    }
+    next();
+  }
+}]);
 
 const client = new ApolloClient({ networkInterface: networkInterface });
 

@@ -39,6 +39,8 @@ method=POST
 
 URL=`http://localhost:4000/webhook`
 
+type = raw, applicaion/JSON
+
 body:
 ```
 {

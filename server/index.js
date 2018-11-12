@@ -26,10 +26,7 @@ try{
         credentialsRequired: false
     }),
     graphqlExpress(req => ({ 
-      schema,
-      context: {
-        user: req.user ? User.findOne({ where: { id: req.user.id } }) : null,
-      },
+      schema
     }))
   );
 } catch(err){

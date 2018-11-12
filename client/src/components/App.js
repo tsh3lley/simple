@@ -1,7 +1,7 @@
 import '../styles/App.css';
-import PlaidLink                      from 'react-plaid-link';
-import React, { Component }           from 'react';
-import { addPlaidItemMutation }       from '../graphql/addPlaidItemMutation';
+import PlaidLink from 'react-plaid-link';
+import React, { Component } from 'react';
+import { addPlaidItemMutation } from '../graphql/addPlaidItemMutation';
 import CreateBudgetForm from './CreateBudgetForm';
 import TransactionsTable from './TransactionsTable';
 import BudgetStats from './BudgetStats';
