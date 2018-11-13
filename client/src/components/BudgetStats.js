@@ -18,9 +18,9 @@ class BudgetStats extends Component {
     }
     return (
       <div>
-        <h1>Budget: {allowed}</h1>
-        <h1>Spent: {spent}</h1>
-        <h1>Remaining: {allowed - spent}</h1>
+        <h1>Budget: ${Math.round(allowed).toLocaleString()}</h1>
+        <h1>Spent: ${Math.round(spent).toLocaleString()}</h1>
+        <h1>Remaining: ${Math.round(allowed - spent).toLocaleString()}</h1>
       </div>
     );
   }
