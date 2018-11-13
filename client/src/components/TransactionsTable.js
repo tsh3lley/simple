@@ -35,7 +35,7 @@ class TransactionsTable extends Component {
             {transactions.map(transaction => (
               <tr key={transaction.id} onClick={(transactionId) => this.ignoreTransaction(transaction.id)}>
                 <td>{transaction.name}</td>
-                <td>{transaction.amount}</td>
+                <td>${Math.round(transaction.amount).toLocaleString()}</td>
                 <td>{transaction.ignore ? 'true' : 'false'}</td>
                 <td>{transaction.pending ? 'true' : 'false'}</td>
                 <td>{transaction.date}</td>
