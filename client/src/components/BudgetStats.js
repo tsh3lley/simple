@@ -4,21 +4,23 @@ import { compose } from 'react-apollo';
 
 class BudgetStats extends Component {
   render() {
-    let amountAllowed = null;
-    let totalSpent = null;
+    let allowed = null;
+    let spent = null;
     let budgetLoading = this.props.getBudget.loading;
     if (budgetLoading) {
-      amountAllowed = <span>loading...</span>
-      totalSpent = <span>loading...</span>
+      allowed = <span>loading...</span>
+      spent = <span>loading...</span>
     } else { 
-      amountAllowed = this.props.getBudget.user.budget.amtAllowed;
-      totalSpent = this.props.getBudget.user.budget.totalSpent;
+      let { user: { budget: { amtAllowed }}} = this.props.getBudget;
+      let { user: { budget: { totalSpent }}} = this.props.getBudget;
+      allowed = amtAllowed
+      spent = totalSpent
     }
     return (
       <div>
-        <h1>Budget: {amountAllowed}</h1>
-        <h1>Spent: {totalSpent}</h1>
-        <h1>Remaining: {amountAllowed - totalSpent}</h1>
+        <h1>Budget: {allowed}</h1>
+        <h1>Spent: {spent}</h1>
+        <h1>Remaining: {allowed - spent}</h1>
       </div>
     );
   }

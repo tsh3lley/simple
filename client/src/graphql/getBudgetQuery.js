@@ -15,7 +15,7 @@ const getBudgetGql = gql`
 
 const getBudgetQuery = graphql(getBudgetGql, {
   name: 'getBudget',
-  options: { variables: { id: 1 }},
+  options: { variables: { id: 69 }},
 });
 
 export { getBudgetQuery };

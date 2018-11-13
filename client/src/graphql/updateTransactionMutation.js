@@ -16,7 +16,7 @@ const updateTransactionMutation = graphql(updateTransactionGql, {
   options: {
     refetchQueries: [{
       query: getBudgetGql,
-      variables: { id: 1 },
+      variables: { id: 69 },
     }]
   }
 

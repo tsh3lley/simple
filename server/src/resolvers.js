@@ -13,8 +13,13 @@ const bcrypt = bluebird.promisifyAll(require('bcrypt'));
 export const resolvers = {
 	Date: GraphQLDate,
 	Query: {
-		user(root, args) {
-		 	return User.findOne({where: args});
+		user(root, args, context) {
+      console.log('@')
+      console.log(context)
+       console.log('@')
+		 	return User.findOne({
+        where: { id: context.user.id }
+      });
 		},
 	},
 	User: {
@@ -25,6 +30,7 @@ export const resolvers = {
       });
     },
     budget(user) {
+      console.log(user)
     	return user.getBudget();
     },
 	},
