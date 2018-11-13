@@ -4,7 +4,7 @@ import App from './components/App';
 import registerServiceWorker from './registerServiceWorker';
 import jsCookie from 'js-cookie';
 import { BrowserRouter } from 'react-router-dom';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import Login from './pages/login';
 import Signup from './pages/signup';
 import PageNotFound from './components/PageNotFound';
@@ -18,11 +18,11 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 const httpLink = createHttpLink({ uri: "http://localhost:4000/graphql" });
 const middlewareLink = new ApolloLink((operation, forward) => {
-  const token = jsCookie.get(token);
+  const token = jsCookie.get('token');
     if (!_.isEmpty(token)) {
       operation.setContext({
         headers: {
-          Authorization: `Bearer ${token.token}`
+          Authorization: `Bearer ${token}`
         }
       });
     }

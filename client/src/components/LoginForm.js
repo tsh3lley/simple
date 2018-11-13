@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
-import Yup from 'yup';
 import classNames from 'classnames';
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom'
+import React from 'react';
+import { Link, withRouter, Redirect } from 'react-router-dom'
 import jsCookie from 'js-cookie';
 import { Formik } from 'formik';
-import { Route, Redirect } from 'react-router'
 import { compose, withApollo } from 'react-apollo';
 import { loginMutation } from '../graphql/loginMutation';
 
@@ -14,41 +12,50 @@ const LoginForm = ({
   errors,
   isSubmitting,
   handleChange,
-  handleSubmit
-}) => (
-  <form onSubmit={handleSubmit}>
-    <div className='form-group'>
-      <label className='form-label'>
-        Email
-      </label>
-      <input
-        name='email'
-        className={classNames('form-input', { 'is-error': errors.email })}
-        type='text'
-        value={values.email}
-        onChange={handleChange} />
-      <label className='form-label'>
-        Password
-      </label>
-      <input
-        name='password'
-        className={classNames('form-input', { 'is-error': errors.password })}
-        type='password'
-        value={values.password}
-        onChange={handleChange} />
-      {errors.graphQLErrors ? <div className='text-error mt-3'>{errors.graphQLErrors[0].message}</div> : ''}
-      <button
-        className='btn btn-primary w-100 mt-3'
-        type='submit'
-        disabled={isSubmitting}>
-        Login
-      </button>
-    </div>
-    <div className='pt-1 text-center'>
-      <span>Don&#39;t have an account? <Link to='/signup'>Signup</Link></span>
-    </div>
-  </form>
-);
+  handleSubmit,
+  history
+}) => {
+  const loggedIn = jsCookie.get('token');
+  console.log('***')
+  console.log(loggedIn)
+  loggedIn ? console.log('yes') : console.log('no')
+  if (!loggedIn) {
+    return (
+      <form onSubmit={handleSubmit}>
+        <div className='form-group'>
+          <label className='form-label'>
+            Email
+          </label>
+          <input
+            name='email'
+            className={classNames('form-input', { 'is-error': errors.email })}
+            type='text'
+            value={values.email}
+            onChange={handleChange} />
+          <label className='form-label'>
+            Password
+          </label>
+          <input
+            name='password'
+            className={classNames('form-input', { 'is-error': errors.password })}
+            type='password'
+            value={values.password}
+            onChange={handleChange} />
+          {errors.graphQLErrors ? <div className='text-error mt-3'>{errors.graphQLErrors[0].message}</div> : ''}
+          <button
+            className='btn btn-primary w-100 mt-3'
+            type='submit'
+            disabled={isSubmitting}>
+            Login
+          </button>
+        </div>
+        <div className='pt-1 text-center'>
+          <span>Don&#39;t have an account? <Link to='/signup'>Signup</Link></span>
+        </div>
+      </form> 
+    );
+  } else return <Redirect to='/' />
+};
 
 LoginForm.propTypes = {
   values: PropTypes.object.isRequired,

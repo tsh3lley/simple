@@ -1,6 +1,6 @@
 import FontAwesome from 'react-fontawesome';
 import colors from '../lib/colors';
-import React, { Component } from 'react';
+import React from 'react';
 
 const Footer = () => (
   <footer className='container'>

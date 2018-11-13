@@ -4,9 +4,6 @@ import { updateTransactionMutation }  from '../graphql/updateTransactionMutation
 import { compose } from 'react-apollo';
 
 class TransactionsTable extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   async refreshData() {
     this.props.getTransactions.refetch();
