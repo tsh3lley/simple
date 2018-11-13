@@ -17,7 +17,6 @@ class TransactionsTable extends Component {
   }
 
   render() {
-    console.log(this.props);
     let transactionsTable = null;
     let transactionsLoading = this.props.getTransactions.loading;
     if (transactionsLoading) {

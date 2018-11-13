@@ -12,6 +12,11 @@ const getTransactionsGql = gql`
         ignore
         pending
       }
+      budget {
+        id
+        amtAllowed
+        totalSpent
+      }
     }
   }
 `;

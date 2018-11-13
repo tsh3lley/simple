@@ -19,18 +19,12 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 const httpLink = createHttpLink({ uri: "http://localhost:4000/graphql" });
 const middlewareLink = new ApolloLink((operation, forward) => {
   const token = jsCookie.get(token);
-  console.log(token);
     if (!_.isEmpty(token)) {
       operation.setContext({
         headers: {
           Authorization: `Bearer ${token.token}`
         }
       });
-/*      operation.setContext({
-        headers: {
-          Authorization: `Bearer ${token.token}`
-        }
-      });*/
     }
   return forward(operation);
 });
