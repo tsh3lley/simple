@@ -13,8 +13,10 @@ const bcrypt = bluebird.promisifyAll(require('bcrypt'));
 export const resolvers = {
 	Date: GraphQLDate,
 	Query: {
-		user(root, args) {
-		 	return User.findOne({where: args});
+		user(root, args, context) {
+		 	return User.findOne({
+        where: { id: context.user.id }
+      });
 		},
 	},
 	User: {
@@ -30,7 +32,6 @@ export const resolvers = {
 	},
   Mutation: {
     signup: async (root, { user }) => {
-      console.log(user);
       user.password = await bcrypt.hashAsync(user.password, 12);
       try {
         const signupUser = await User.create(user);
@@ -50,12 +51,14 @@ export const resolvers = {
     },
     login: async (root, { user }) => {
       const loggingInUser = await User.findOne({ where: { email: user.email }});
+      console.log(loggingInUser)
       if (loggingInUser === null){
         throw new UserError('Invalid email');
       } 
       const result = await bcrypt.compareAsync(user.password, loggingInUser.password);
       if (result) {
         const token = jwt.sign({ id: loggingInUser.id }, JWT_SECRET);
+        console.log(token)
         return {
           token: token
         }
@@ -95,7 +98,6 @@ export const resolvers = {
 			const result = await t.update({ignore: !t.ignore});
       const user = await t.getUser();
       const budget = await user.getBudget();
-      console.log('update')
       const relevantTransactions = await user.getTransactions({ 
         where: {
           date: {
@@ -179,6 +181,7 @@ export const resolvers = {
       const transactionsSum = calcTotalSpent(transactions);
       const budget = await user.getBudget();
       await budget.update({ totalSpent: transactionsSum });
+      console.log(transactions)
       return true;
     }
   },
