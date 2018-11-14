@@ -41,9 +41,6 @@ class App extends Component {
           <CreateBudgetForm />
           <BudgetStats />
         </div>
-        <div>
-          {JSON.stringify(this.state.plaidItem)}
-        </div>
         <TransactionsTable />
         <Footer />
       </div>
