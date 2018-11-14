@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { getTransactionsQuery } from '../graphql/getTransactionsQuery'
 import { updateTransactionMutation }  from '../graphql/updateTransactionMutation';
 import { compose } from 'react-apollo';
+import moment from 'moment';
 
 class TransactionsTable extends Component {
 
@@ -24,21 +25,20 @@ class TransactionsTable extends Component {
         <table>
           <thead>
             <tr>
-              <th>name</th>
-              <th>amount</th>
-              <th>ignore</th>
-              <th>pending</th>
-              <th>date</th>
+              <th>Name</th>
+              <th>Amount</th>
+              <th>Is Pending</th>
+              <th>Date</th>
             </tr>
           </thead>
           <tbody>
             {transactions.map(transaction => (
-              <tr key={transaction.id} onClick={(transactionId) => this.ignoreTransaction(transaction.id)}>
+              <tr key={transaction.id} onClick={(transactionId) => this.ignoreTransaction(transaction.id)}
+                className={transaction.ignore ? 'ignored' : null}>
                 <td>{transaction.name}</td>
                 <td>${Math.round(transaction.amount).toLocaleString()}</td>
-                <td>{transaction.ignore ? 'true' : 'false'}</td>
                 <td>{transaction.pending ? 'true' : 'false'}</td>
-                <td>{transaction.date}</td>
+                <td>{moment(transaction.date).format("MMMM D, YYYY")}</td>
               </tr>
             ))}
           </tbody>
