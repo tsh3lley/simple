@@ -1,5 +1,4 @@
 .App {
-  text-align: center;
 }
 
 .App-logo {
@@ -8,47 +7,68 @@
 }
 
 .App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+  background-color: #00b28b;
+  padding: 100px 0;
   color: white;
+  text-align: center;
+}
+
+.App-header .title {
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
 .App-intro {
   font-size: large;
 }
 
-.budgetInput {
-  font-weight: bold;
-  display: flex;
-  justify-content: left;
-  align-items: left;
-}
-
-.transactionsTable {
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-table {
-  text-align: left;
-}
-
-td,th {
-  padding: 7px;
-}
-
-tr {
-  cursor: pointer;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.stats {
+  padding: 50px 0;
+  background-color: #eee;
+  text-align: center;
 }
 
 .ignored {
   color: lightgray;
+}
+
+.main-content {
+  padding: 50px 0;
+}
+
+.table-hover > tbody > tr {
+  transition: 0.5s;
+}
+
+.table-hover > tbody > tr:hover {
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.table {
+  margin: 50px 0;
+}
+
+.table thead th {
+  font-family: 'Josefin Sans', sans-serif;
+  text-transform: uppercase;
+  border-top: none;
+}
+
+.btn-link, .btn-link:visited, .btn-link:focus {
+  color: #fff;
+  border-bottom: 1px dotted #fff;
+  border-radius: 0;
+  transition: 0.5s;
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  transition: 0.5s;
+  color: #ECC3C7;
+  border-bottom: 1px dotted #ECC3C7;
+  border-radius: 0;
+  text-decoration: none;
 }

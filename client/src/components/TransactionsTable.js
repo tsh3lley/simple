@@ -22,12 +22,11 @@ class TransactionsTable extends Component {
     } else { 
       const { user: { transactions } } = this.props.getTransactions;
       transactionsTable = (
-        <table>
+        <table className="table table-hover">
           <thead>
             <tr>
               <th>Name</th>
               <th>Amount</th>
-              <th>Is Pending</th>
               <th>Date</th>
             </tr>
           </thead>
@@ -35,9 +34,8 @@ class TransactionsTable extends Component {
             {transactions.map(transaction => (
               <tr key={transaction.id} onClick={(transactionId) => this.ignoreTransaction(transaction.id)}
                 className={transaction.ignore ? 'ignored' : null}>
-                <td>{transaction.name}</td>
+                <td>{transaction.pending ? '(Pending) ' : ''}{transaction.name}</td>
                 <td>${Math.round(transaction.amount).toLocaleString()}</td>
-                <td>{transaction.pending ? 'true' : 'false'}</td>
                 <td>{moment(transaction.date).format("MMMM D, YYYY")}</td>
               </tr>
             ))}
@@ -46,9 +44,9 @@ class TransactionsTable extends Component {
       ) 
     }
     return (
-      <div>
-        <button onClick={() => this.refreshData()}> Refresh Data </button>
+      <div className="container">
         <div className="transactionsTable">{transactionsTable}</div>
+        <button style={{display: "block", margin: "0 auto"}} className="btn btn-dark" onClick={() => this.refreshData()}>Refresh Data</button>
       </div>
     );
   }

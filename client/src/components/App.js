@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/App.css';
 import PlaidLink from 'react-plaid-link';
 import React, { Component } from 'react';
@@ -7,6 +8,9 @@ import TransactionsTable from './TransactionsTable';
 import BudgetStats from './BudgetStats';
 import { compose } from 'react-apollo';
 import Footer from './Footer';
+import $ from 'jquery';
+import Popper from 'popper.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 class App extends Component {
   constructor(props) {
@@ -28,19 +32,28 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <h2>SimpleBudget</h2>
+          <div className="container">
+            <div className="row">
+              <div className="col-4">
+                <CreateBudgetForm />
+              </div>
+              <div className="col-4">
+                <h2 className="title">SimpleBudget</h2>
+              </div>
+              <div className="col-4">
+                <PlaidLink
+                  publicKey="0de01812c4e3a7cb3b56cd17d7b9cd"
+                  product="auth"
+                  env="sandbox"
+                  clientName="SimpleBudget"
+                  onSuccess={(token, metadata) => this.handleOnSuccess(token,metadata)}
+                  className="btn btn-link" 
+                  style={{}}/>
+              </div>
+            </div>
+          </div>
         </div>
-        <PlaidLink
-          publicKey="0de01812c4e3a7cb3b56cd17d7b9cd"
-          product="auth"
-          env="sandbox"
-          clientName="SimpleBudget"
-          onSuccess={(token, metadata) => this.handleOnSuccess(token,metadata)}
-        />
-        <div>
-          <CreateBudgetForm />
-          <BudgetStats />
-        </div>
+        <BudgetStats />
         <TransactionsTable />
         <Footer />
       </div>
@@ -48,7 +61,6 @@ class App extends Component {
   }
 }
 
-//change User ID use context.user.id
 export default compose (
   addPlaidItemMutation,
 )(App);
