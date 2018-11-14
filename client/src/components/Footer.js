@@ -1,5 +1,4 @@
 import FontAwesome from 'react-fontawesome';
-import colors from '../lib/colors';
 import React from 'react';
 
 const Footer = () => (
