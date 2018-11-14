@@ -1,5 +1,4 @@
 import FontAwesome from 'react-fontawesome';
-import colors from '../lib/colors';
 import React from 'react';
 
 const Footer = () => (
@@ -8,7 +7,7 @@ const Footer = () => (
       <p className='m-0'>
         <span>Made in &nbsp;</span>
         <FontAwesome name='sun-o' style={{ color: '#DAA520' }} />
-        <span>&nbsp;s u n n y&nbsp;</span>
+        <a href='/logout'>&nbsp;s u n n y&nbsp;</a>
         <FontAwesome name='sun-o' style={{ color: '#DAA520' }} />
         <span>&nbsp;San Francisco.</span>
       </p>

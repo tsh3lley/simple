@@ -8,8 +8,8 @@ import TransactionsTable from './TransactionsTable';
 import BudgetStats from './BudgetStats';
 import { compose } from 'react-apollo';
 import Footer from './Footer';
-import $ from 'jquery';
-import Popper from 'popper.js';
+//import $ from 'jquery'; not being used - remove?
+//import Popper from 'popper.js'; not being used - remove?
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 class App extends Component {

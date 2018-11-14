@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Switch, Route } from 'react-router-dom';
 import Login from './pages/login';
 import Signup from './pages/signup';
+import Logout from './pages/logout';
 import PageNotFound from './components/PageNotFound';
 import AuthorizedRoute from './lib/AuthorizedRoute';
 import _ from 'lodash';
@@ -42,6 +43,7 @@ ReactDOM.render(
         <AuthorizedRoute exact path='/' component={App}/>
         <Route exact path='/login' component={Login}/>
         <Route exact path='/signup' component={Signup}/>
+        <Route exact path='/logout' component={Logout} />
         <Route component={PageNotFound}/>
       </Switch>
     </BrowserRouter>

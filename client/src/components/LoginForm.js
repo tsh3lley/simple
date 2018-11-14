@@ -16,9 +16,6 @@ const LoginForm = ({
   history
 }) => {
   const loggedIn = jsCookie.get('token');
-  console.log('***')
-  console.log(loggedIn)
-  loggedIn ? console.log('yes') : console.log('no')
   if (!loggedIn) {
     return (
       <form onSubmit={handleSubmit}>

@@ -51,14 +51,12 @@ export const resolvers = {
     },
     login: async (root, { user }) => {
       const loggingInUser = await User.findOne({ where: { email: user.email }});
-      console.log(loggingInUser)
       if (loggingInUser === null){
         throw new UserError('Invalid email');
       } 
       const result = await bcrypt.compareAsync(user.password, loggingInUser.password);
       if (result) {
         const token = jwt.sign({ id: loggingInUser.id }, JWT_SECRET);
-        console.log(token)
         return {
           token: token
         }
@@ -181,7 +179,6 @@ export const resolvers = {
       const transactionsSum = calcTotalSpent(transactions);
       const budget = await user.getBudget();
       await budget.update({ totalSpent: transactionsSum });
-      console.log(transactions)
       return true;
     }
   },
