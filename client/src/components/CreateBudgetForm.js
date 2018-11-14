@@ -16,20 +16,31 @@ const CreateBudgetForm = ({
   handleSubmit,
   handleReset,
 }) => (
-  <form onSubmit={handleSubmit}>
-    <label htmlFor="budget">Budget</label>
-    <input
-      id="budget"
-      placeholder="Weekly Bdget Amount"
-      type="number"
-      value={values.budget}
-      onChange={handleChange}
-      onBlur={handleBlur}
-    />
-    <button type="submit" disabled={isSubmitting}>
-      Submit
-    </button>
-  </form>
+  <div>
+  <button className="btn btn-link" data-toggle="modal" data-target="#exampleModalLong">Edit Budget</button>
+  <div className="modal fade" id="exampleModalLong" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div className="modal-dialog" role="document">
+    <div className="modal-content">
+      <div className="modal-body">
+        <h3 style={{color: "#111"}}>Edit Budget</h3>
+        <form onSubmit={handleSubmit}>
+          <input
+            id="budget"
+            type="number"
+            value={values.budget}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="form-control"
+          />
+          <button className="btn btn-block btn-primary" type="submit" disabled={isSubmitting}>
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
 );
 
 CreateBudgetForm.propTypes = {

@@ -17,10 +17,14 @@ class BudgetStats extends Component {
       spent = totalSpent
     }
     return (
-      <div>
-        <h1>Budget: ${Math.round(allowed).toLocaleString()}</h1>
-        <h1>Spent: ${Math.round(spent).toLocaleString()}</h1>
-        <h1>Remaining: ${Math.round(allowed - spent).toLocaleString()}</h1>
+      <div className="stats">
+        <div className="container">
+          <div className="row">
+            <div className="col-4">Budget: ${Math.round(allowed).toLocaleString()}</div>
+            <div className="col-4">Spent: ${Math.round(spent).toLocaleString()}</div>
+            <div className="col-4">Remaining: ${Math.round(allowed - spent).toLocaleString()}</div>
+          </div>
+        </div>
       </div>
     );
   }
