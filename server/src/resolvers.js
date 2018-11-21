@@ -130,6 +130,11 @@ export const resolvers = {
       const webhookResult = await client.updateItemWebhook(plaidResult.access_token, WEBHOOK_URL);
       return result;
     },
+    syncTransactions: async (root, { user }, context) => {
+      console.log('getTransactions');
+      console.log(user);
+      //should take a user and nothing else
+    },
     refreshTransactionsWebhook: async (root, { itemId, numTransactions, webhookCode }) => {
       //plaid webhook hits our endpoint telling it that info has changed,
       //handle the result here
@@ -153,6 +158,7 @@ export const resolvers = {
         startDate, 
         today, 
       );  
+      console.log(result);
       for (var transaction of result.transactions) {
         const transAmt = parseFloat(transaction.amount);
         const transDate = moment(transaction.date).format('YYYY-MM-DD');

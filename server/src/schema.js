@@ -74,6 +74,7 @@ type Mutation {
   	createTransaction(transaction: CreateTransactionInput!): Transaction
 	updateTransaction(id: ID!): Transaction
 	addPlaidItem(token: String!): PlaidItem
+	syncTransactions(userID: ID!): Boolean
 	refreshTransactionsWebhook(itemId: String!, newTransactions: Int!, webhookCode: String!): Boolean
 }
 `
