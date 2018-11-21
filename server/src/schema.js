@@ -64,6 +64,7 @@ type PlaidItem {
 
 type Query {
 	user(id: ID!): User
+	transaction(id: ID!): Transaction
 	sumTransactions: Float!
 }
 

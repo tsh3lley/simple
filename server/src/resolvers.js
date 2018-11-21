@@ -17,7 +17,7 @@ export const resolvers = {
 		 	return User.findOne({
         where: { id: context.user.id }
       });
-		},
+		}
 	},
 	User: {
     transactions(user) {
@@ -132,7 +132,7 @@ export const resolvers = {
     },
     syncTransactions: async (root, { user }, context) => {
       console.log('getTransactions');
-      console.log(user);
+      //console.log(user);
       //should take a user and nothing else
     },
     refreshTransactionsWebhook: async (root, { itemId, numTransactions, webhookCode }) => {
@@ -145,6 +145,7 @@ export const resolvers = {
         PLAID_PUBLIC_KEY,
         plaid.environments[PLAID_ENV],
       );
+      //TODO: fix this, if the Item id cant be found/linked to a user, return an error
       const item = await PlaidItem.findOne({
         where: {itemId: itemId}, 
         include: User,
@@ -158,23 +159,28 @@ export const resolvers = {
         startDate, 
         today, 
       );  
-      console.log(result);
       for (var transaction of result.transactions) {
-        const transAmt = parseFloat(transaction.amount);
-        const transDate = moment(transaction.date).format('YYYY-MM-DD');
-        let newTransaction = await user.createTransaction({
-          transactionId: transaction.transaction_id,
-          accountId: transaction.account_id,
-          categoryId: transaction.category_id,
-          type: transaction.transaction_type,
-          pending: transaction.pending,
-          amount: transaction.amount,
-          ignore: false,
-          date: transaction.date,
-          name:transaction.name
+        const existingTransaction = await Transaction.findOne({
+          where: { transactionId: transaction.transaction_id }
         });
+        if (existingTransaction) {
+          continue;
+        } else {
+          const transAmt = parseFloat(transaction.amount);
+          const transDate = moment(transaction.date).format('YYYY-MM-DD');
+          let newTransaction = await user.createTransaction({
+            transactionId: transaction.transaction_id,
+            accountId: transaction.account_id,
+            categoryId: transaction.category_id,
+            type: transaction.transaction_type,
+            pending: transaction.pending,
+            amount: transaction.amount,
+            ignore: false,
+            date: transaction.date,
+            name:transaction.name
+          });
+        }
       }
-      console.log('test')
       const transactions = await user.getTransactions({ 
         where: {
           date: {
@@ -186,6 +192,8 @@ export const resolvers = {
       const transactionsSum = calcTotalSpent(transactions);
       const budget = await user.getBudget();
       await budget.update({ totalSpent: transactionsSum });
+      console.log('endwebhook')
+      await syncTransactions();
       return true;
     }
   },
