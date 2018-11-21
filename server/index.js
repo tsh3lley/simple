@@ -10,6 +10,7 @@ import { db } from './src/connectors';
 import { JWT_SECRET } from './config';
 import { graphql } from 'graphql';
 import { User } from './src/connectors'
+import handleWebhook from './src/lib/handleWebhook';
 
 db.sync();
 
@@ -42,6 +43,8 @@ server.use('/graphiql', graphiqlExpress({
 
 // accept webhook via rest
 server.post('/webhook', async (req, res) => {
+  const test = handleWebhook(req)
+  console.log(test);
   const webhookMutation = `
     mutation {
       refreshTransactionsWebhook(
@@ -54,7 +57,6 @@ server.post('/webhook', async (req, res) => {
   res.send(null);
   const transactionsResult = await graphql(schema, webhookMutation);
   console.log('webhook hit')
-  //console.log(transactionsResult);
 });
 
 

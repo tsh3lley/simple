@@ -135,10 +135,12 @@ export const resolvers = {
       //console.log(user);
       //should take a user and nothing else
     },
-    refreshTransactionsWebhook: async (root, { itemId, numTransactions, webhookCode }) => {
+    refreshTransactionsWebhook: async (root, args) => {
       //plaid webhook hits our endpoint telling it that info has changed,
-      //handle the result here
       console.log('webhook');
+      //{ itemId, numTransactions, webhookCode }
+      const { itemId, numTransactions, webhookCode } = args;
+      console.log(itemId)
       const client = new plaid.Client(
         PLAID_CLIENT_ID,
         PLAID_SECRET,
@@ -193,7 +195,6 @@ export const resolvers = {
       const budget = await user.getBudget();
       await budget.update({ totalSpent: transactionsSum });
       console.log('endwebhook')
-      await syncTransactions();
       return true;
     }
   },
