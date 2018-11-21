@@ -168,6 +168,7 @@ export const resolvers = {
           name:transaction.name
         });
       }
+      console.log('test')
       const transactions = await user.getTransactions({ 
         where: {
           date: {
