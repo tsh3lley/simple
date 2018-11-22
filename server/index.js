@@ -41,24 +41,10 @@ server.use('/graphiql', graphiqlExpress({
   endpointURL: '/graphql',
 }));
 
-// accept webhook via rest
 server.post('/webhook', async (req, res) => {
-  const test = handleWebhook(req)
-  console.log(test);
-  const webhookMutation = `
-    mutation {
-      refreshTransactionsWebhook(
-        itemId: "${req.body.item_id}"
-        newTransactions: ${req.body.new_transactions}
-        webhookCode: "${req.body.webhook_code}"
-      )
-    }
-  `
+  handleWebhook(req)
   res.send(null);
-  const transactionsResult = await graphql(schema, webhookMutation);
-  console.log('webhook hit')
 });
-
 
 server.listen(PORT, () => {
   console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
