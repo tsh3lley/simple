@@ -17,7 +17,7 @@ export const resolvers = {
 		 	return User.findOne({
         where: { id: context.user.id }
       });
-		},
+		}
 	},
 	User: {
     transactions(user) {
@@ -130,16 +130,70 @@ export const resolvers = {
       const webhookResult = await client.updateItemWebhook(plaidResult.access_token, WEBHOOK_URL);
       return result;
     },
-    refreshTransactionsWebhook: async (root, { itemId, numTransactions, webhookCode }) => {
+    syncTransactions: async (root, { userId }, context) => {
+      //consider passing user in intead of userid
+      const user = await User.findOne({
+        where: { id: userId }
+      });
+      //include plaid items in user query above and delete this
+      const item = await PlaidItem.findOne({
+        where: {userId: userId}, 
+        include: User,
+      });
+      const days = 30
+      const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
+      const today = moment().format('YYYY-MM-DD');
+      //do we need to loop through all items? possible that the token is account specific vs item specific
+      const result = await client.getTransactions(
+        item.token, 
+        startDate, 
+        today, 
+      );  
+      for (var transaction of result.transactions) {
+        const existingTransaction = await Transaction.findOne({
+          where: { transactionId: transaction.transaction_id }
+        });
+        if (existingTransaction) {
+          continue;
+        } else {
+          const transAmt = parseFloat(transaction.amount);
+          const transDate = moment(transaction.date).format('YYYY-MM-DD');
+          let newTransaction = await user.createTransaction({
+            transactionId: transaction.transaction_id,
+            accountId: transaction.account_id,
+            categoryId: transaction.category_id,
+            type: transaction.transaction_type,
+            pending: transaction.pending,
+            amount: transaction.amount,
+            ignore: false,
+            date: transaction.date,
+            name:transaction.name
+          });
+        }
+      }
+      const transactions = await user.getTransactions({ 
+        where: {
+          date: {
+            gt: startDate
+          },
+          ignore: false
+        }
+      });
+      const transactionsSum = calcTotalSpent(transactions);
+      const budget = await user.getBudget();
+      await budget.update({ totalSpent: transactionsSum });
+      return true;
+    },
+    refreshTransactionsWebhook: async (root, args) => {
       //plaid webhook hits our endpoint telling it that info has changed,
-      //handle the result here
-      console.log('webhook');
+      const { itemId, numTransactions, webhookCode } = args;
       const client = new plaid.Client(
         PLAID_CLIENT_ID,
         PLAID_SECRET,
         PLAID_PUBLIC_KEY,
         plaid.environments[PLAID_ENV],
       );
+      //TODO: fix this, if the Item id cant be found/linked to a user, return an error
       const item = await PlaidItem.findOne({
         where: {itemId: itemId}, 
         include: User,
@@ -154,19 +208,26 @@ export const resolvers = {
         today, 
       );  
       for (var transaction of result.transactions) {
-        const transAmt = parseFloat(transaction.amount);
-        const transDate = moment(transaction.date).format('YYYY-MM-DD');
-        let newTransaction = await user.createTransaction({
-          transactionId: transaction.transaction_id,
-          accountId: transaction.account_id,
-          categoryId: transaction.category_id,
-          type: transaction.transaction_type,
-          pending: transaction.pending,
-          amount: transaction.amount,
-          ignore: false,
-          date: transaction.date,
-          name:transaction.name
+        const existingTransaction = await Transaction.findOne({
+          where: { transactionId: transaction.transaction_id }
         });
+        if (existingTransaction) {
+          continue;
+        } else {
+          const transAmt = parseFloat(transaction.amount);
+          const transDate = moment(transaction.date).format('YYYY-MM-DD');
+          let newTransaction = await user.createTransaction({
+            transactionId: transaction.transaction_id,
+            accountId: transaction.account_id,
+            categoryId: transaction.category_id,
+            type: transaction.transaction_type,
+            pending: transaction.pending,
+            amount: transaction.amount,
+            ignore: false,
+            date: transaction.date,
+            name:transaction.name
+          });
+        }
       }
       const transactions = await user.getTransactions({ 
         where: {

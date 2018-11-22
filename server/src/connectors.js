@@ -43,6 +43,7 @@ UserModel.hasOne(BudgetModel);
 
 BudgetModel.belongsTo(UserModel);
 TransactionModel.belongsTo(UserModel);
+TransactionModel.belongsTo(PlaidItemModel);
 PlaidItemModel.belongsTo(UserModel);
 
 const Transaction = db.models.transaction;
