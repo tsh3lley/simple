@@ -64,8 +64,6 @@ type PlaidItem {
 
 type Query {
 	user(id: ID!): User
-	transaction(id: ID!): Transaction
-	sumTransactions: Float!
 }
 
 type Mutation {
@@ -76,7 +74,6 @@ type Mutation {
 	updateTransaction(id: ID!): Transaction
 	addPlaidItem(token: String!): PlaidItem
 	syncTransactions(userId: ID!): Transaction
-	refreshTransactionsWebhook(itemId: String!, newTransactions: Int!, webhookCode: String!): Boolean
 }
 `
 
