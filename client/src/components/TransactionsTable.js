@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { getTransactionsQuery } from '../graphql/getTransactionsQuery'
 import { updateTransactionMutation }  from '../graphql/updateTransactionMutation';
+import { syncTransactionsMutation } from '../graphql/syncTransactionsMutation';
 import { compose } from 'react-apollo';
 import moment from 'moment';
 
@@ -8,6 +9,7 @@ class TransactionsTable extends Component {
 
   async refreshData() {
     this.props.getTransactions.refetch();
+    this.props.syncTransactions({ variables: { userId: 1 }});
   }
 
   async ignoreTransaction(transactionId) {
@@ -53,6 +55,7 @@ class TransactionsTable extends Component {
 }
 
 export default compose (
+  syncTransactionsMutation,
   getTransactionsQuery,
   updateTransactionMutation,
 )(TransactionsTable);

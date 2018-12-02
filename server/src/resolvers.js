@@ -190,7 +190,8 @@ export const resolvers = {
       const transactionsSum = calcTotalSpent(transactions);
       const budget = await user.getBudget();
       await budget.update({ totalSpent: transactionsSum });
-      return true;
+      //todo: return something useful lol
+      return transactions[0];
     }
   },
 };
