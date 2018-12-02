@@ -147,7 +147,7 @@ export const resolvers = {
         where: {userId: userId}, 
         include: User,
       });
-      const days = 30
+      const days = 7
       const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
       //this will get all transactions across all items
