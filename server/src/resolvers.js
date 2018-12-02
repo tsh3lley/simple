@@ -131,6 +131,13 @@ export const resolvers = {
       return result;
     },
     syncTransactions: async (root, { userId }, context) => {
+      const client = new plaid.Client(
+        PLAID_CLIENT_ID,
+        PLAID_SECRET,
+        PLAID_PUBLIC_KEY,
+        plaid.environments[PLAID_ENV],
+      );
+      console.log(client)
       //consider passing user in intead of userid
       const user = await User.findOne({
         where: { id: userId }
