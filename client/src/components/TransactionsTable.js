@@ -9,7 +9,7 @@ class TransactionsTable extends Component {
 
   async refreshData() {
     this.props.getTransactions.refetch();
-    this.props.syncTransactions({ variables: { userId: 1 }});
+    this.props.getTransactions({ variables: { userId: 1, startDate: "2018-11-30" }});
   }
 
   async ignoreTransaction(transactionId) {
@@ -22,7 +22,7 @@ class TransactionsTable extends Component {
     if (transactionsLoading) {
       transactionsTable = <h1>loading...</h1>
     } else { 
-      const { user: { transactions } } = this.props.getTransactions;
+      const transactions = this.props.getTransactions.getTransactions;
       transactionsTable = (
         <table className="table table-hover">
           <thead>

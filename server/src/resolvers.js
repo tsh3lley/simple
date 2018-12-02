@@ -17,7 +17,20 @@ export const resolvers = {
 		 	return User.findOne({
         where: { id: context.user.id }
       });
-		}
+		},
+    getTransactions(root, args, context) {
+      const { userId, startDate } = args;
+      console.log(context);
+      return Transaction.findAll({
+        where: { 
+          userId: userId,
+          date: { 
+            gt: startDate
+          } 
+        },
+        order: [['date', 'DESC']],
+      });
+    }
 	},
 	User: {
     transactions(user) {
