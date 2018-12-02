@@ -4,9 +4,7 @@ import gql from 'graphql-tag';
 const syncTransactionsGql = gql`
     mutation($userId: ID!) {
       syncTransactions(userId: $userId) {
-        id {
-          id
-        }
+        transactionId
       }
     }
   `

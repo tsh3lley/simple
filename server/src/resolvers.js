@@ -191,6 +191,7 @@ export const resolvers = {
       const budget = await user.getBudget();
       await budget.update({ totalSpent: transactionsSum });
       //todo: return something useful lol
+      console.log('transactions 0 ' + transactions[0])
       return transactions[0];
     }
   },
