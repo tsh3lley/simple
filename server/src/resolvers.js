@@ -150,12 +150,13 @@ export const resolvers = {
       const days = 30
       const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
-      //do we need to loop through all items? possible that the token is account specific vs item specific
+      //this will get all transactions across all items
       const result = await client.getTransactions(
-        item.token, 
+        item.token,
         startDate, 
         today, 
       );  
+      console.log('token ' + item.token)
       for (var transaction of result.transactions) {
         const existingTransaction = await Transaction.findOne({
           where: { transactionId: transaction.transaction_id }
