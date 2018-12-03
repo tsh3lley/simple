@@ -64,7 +64,7 @@ type PlaidItem {
 
 type Query {
 	user(id: ID!): User
-	getTransactions(userId: ID!, startDate: Date!): [Transaction]
+	getTransactions: [Transaction]
 }
 
 type Mutation {

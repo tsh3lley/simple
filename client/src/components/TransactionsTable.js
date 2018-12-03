@@ -9,7 +9,7 @@ class TransactionsTable extends Component {
 
   async refreshData() {
     this.props.getTransactions.refetch();
-    this.props.getTransactions({ variables: { userId: 1, startDate: "2018-11-30" }});
+    this.props.getTransactions;
   }
 
   async ignoreTransaction(transactionId) {
@@ -38,7 +38,7 @@ class TransactionsTable extends Component {
                 className={transaction.ignore ? 'ignored' : null}>
                 <td>{transaction.pending ? '(Pending) ' : ''}{transaction.name}</td>
                 <td>${Math.round(transaction.amount).toLocaleString()}</td>
-                <td>{moment(transaction.date).format("MMMM D, YYYY")}</td>
+                <td>{moment(transaction.date).add(8,'hour').format("MMMM D, YYYY")}</td>
               </tr>
             ))}
           </tbody>

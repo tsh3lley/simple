@@ -2,8 +2,8 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag';
 
 const getTransactionsGql = gql`
-  query ($userId: ID!, $startDate: Date!) {
-    getTransactions (userId: $userId, startDate: $startDate) {
+  query {
+    getTransactions {
       id
       amount
       name
@@ -14,11 +14,7 @@ const getTransactionsGql = gql`
   }
 `;
 
-//TODO - figure out how to accept variables here, consider query component
-const getTransactionsQuery = graphql(getTransactionsGql, {
-  name: 'getTransactions',
-  options: { variables: { userId: 1, startDate: "2018-11-30" }},
-});
+const getTransactionsQuery = graphql(getTransactionsGql, { name: 'getTransactions' });
 
 export { getTransactionsQuery };
 export { getTransactionsGql };
