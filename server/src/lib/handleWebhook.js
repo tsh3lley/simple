@@ -17,9 +17,9 @@ const handleWebhook = async (req) => {
   console.log(user.id)
   const webhookMutation = `
     mutation {
-      syncTransactions(
-        userId: ${ user.id }
-      )
+      syncTransactions(userId: ${ user.id }) {
+        transactionId
+      }
     }
   `
   const transactionsResult = await graphql(schema, webhookMutation);

@@ -40,6 +40,7 @@ const PlaidItemModel = db.define('plaidItem', {
 UserModel.hasMany(PlaidItemModel);
 UserModel.hasMany(TransactionModel);
 UserModel.hasOne(BudgetModel);
+PlaidItemModel.hasMany(TransactionModel);
 
 BudgetModel.belongsTo(UserModel);
 TransactionModel.belongsTo(UserModel);

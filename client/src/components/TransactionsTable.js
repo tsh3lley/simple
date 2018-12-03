@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { getTransactionsQuery } from '../graphql/getTransactionsQuery'
 import { updateTransactionMutation }  from '../graphql/updateTransactionMutation';
+import { syncTransactionsMutation } from '../graphql/syncTransactionsMutation';
 import { compose } from 'react-apollo';
 import moment from 'moment';
 
@@ -8,6 +9,7 @@ class TransactionsTable extends Component {
 
   async refreshData() {
     this.props.getTransactions.refetch();
+    this.props.getTransactions;
   }
 
   async ignoreTransaction(transactionId) {
@@ -20,7 +22,7 @@ class TransactionsTable extends Component {
     if (transactionsLoading) {
       transactionsTable = <h1>loading...</h1>
     } else { 
-      const { user: { transactions } } = this.props.getTransactions;
+      const transactions = this.props.getTransactions.getTransactions;
       transactionsTable = (
         <table className="table table-hover">
           <thead>
@@ -36,7 +38,7 @@ class TransactionsTable extends Component {
                 className={transaction.ignore ? 'ignored' : null}>
                 <td>{transaction.pending ? '(Pending) ' : ''}{transaction.name}</td>
                 <td>${Math.round(transaction.amount).toLocaleString()}</td>
-                <td>{moment(transaction.date).format("MMMM D, YYYY")}</td>
+                <td>{moment(transaction.date).add(8,'hour').format("MMMM D, YYYY")}</td>
               </tr>
             ))}
           </tbody>
@@ -53,6 +55,7 @@ class TransactionsTable extends Component {
 }
 
 export default compose (
+  syncTransactionsMutation,
   getTransactionsQuery,
   updateTransactionMutation,
 )(TransactionsTable);

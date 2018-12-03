@@ -17,7 +17,23 @@ export const resolvers = {
 		 	return User.findOne({
         where: { id: context.user.id }
       });
-		}
+		},
+    getTransactions(root, args, context) {
+      //sunday = 0, monday = 1, etc. subtract until we are back at sunday
+      let date = moment().startOf('day').subtract(moment().format('d'),'day');
+      //plaid sucks and has no time or timezone, so offset for UTC -> PDT
+      date = moment(date).subtract(8,'hour');
+      console.log(date)
+      return Transaction.findAll({
+        where: { 
+          userId: context.user.id,
+          date: { 
+            gte: date
+          } 
+        },
+        order: [['date', 'DESC']],
+      });
+    }
 	},
 	User: {
     transactions(user) {
@@ -65,13 +81,15 @@ export const resolvers = {
       }
     },
     createBudget: async (root, { budget }, context) => {
-      const days = moment().day() - moment().day(1).day();
+      let date = moment().startOf('day').subtract(moment().format('d'),'day');
+      //plaid sucks and has no time or timezone, so offset for UTC -> PDT
+      date = moment(date).subtract(8,'hour');
       const user = await User.findOne({ where: { id: context.user.id } });
       const newBudget = await user.getBudget();
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: days
+            gte: date
           },
           ignore: false
         }
@@ -91,15 +109,17 @@ export const resolvers = {
 			return result;
 		},
     updateTransaction: async (root, { id }, context) => {
-      const days = moment().day() - moment().day(1).day();  
+      let date = moment().startOf('day').subtract(moment().format('d'),'day');
+      //plaid sucks and has no time or timezone, so offset for UTC -> PDT
+      date = moment(date).subtract(8,'hour');
 			var t = await Transaction.findOne({where: {id: id}});
 			const result = await t.update({ignore: !t.ignore});
       const user = await t.getUser();
       const budget = await user.getBudget();
-      const relevantTransactions = await user.getTransactions({ 
+      const relevantTransactions = await user.getTransactions({
         where: {
           date: {
-            gt: days
+            gte: date
           },
           ignore: false
         }
@@ -137,7 +157,6 @@ export const resolvers = {
         PLAID_PUBLIC_KEY,
         plaid.environments[PLAID_ENV],
       );
-      console.log(client)
       //consider passing user in intead of userid
       const user = await User.findOne({
         where: { id: userId }
@@ -147,12 +166,12 @@ export const resolvers = {
         where: {userId: userId}, 
         include: User,
       });
-      const days = 30
-      const startDate = moment().subtract(days, 'days').format('YYYY-MM-DD');
+      //get more transactions than we really need or use, just in case
+      const startDate = moment().subtract(8, 'days').format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
-      //do we need to loop through all items? possible that the token is account specific vs item specific
+      //this will get all transactions across all items
       const result = await client.getTransactions(
-        item.token, 
+        item.token,
         startDate, 
         today, 
       );  
@@ -164,7 +183,6 @@ export const resolvers = {
           continue;
         } else {
           const transAmt = parseFloat(transaction.amount);
-          const transDate = moment(transaction.date).format('YYYY-MM-DD');
           let newTransaction = await user.createTransaction({
             transactionId: transaction.transaction_id,
             accountId: transaction.account_id,
@@ -178,10 +196,13 @@ export const resolvers = {
           });
         }
       }
+      let date = moment().startOf('day').subtract(moment().format('d'),'day');
+      //plaid sucks and has no time or timezone, so offset for UTC -> PDT
+      date = moment(date).subtract(8,'hour');
       const transactions = await user.getTransactions({ 
         where: {
           date: {
-            gt: startDate
+            gte: date
           },
           ignore: false
         }
@@ -189,7 +210,9 @@ export const resolvers = {
       const transactionsSum = calcTotalSpent(transactions);
       const budget = await user.getBudget();
       await budget.update({ totalSpent: transactionsSum });
-      return true;
+      //todo: return something useful lol
+      console.log('transactions 0 ' + transactions[0])
+      return transactions[0];
     }
   },
 };

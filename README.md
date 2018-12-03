@@ -15,7 +15,7 @@
 4. copy `.env.exmaple` in the root dir and rename the new file `.env`
   - jwt secret can be anything you want
   - get the plaid keys from the plaid account (should be an invite in your email)
-  - plaid env should be `sandbox`
+  - plaid env should be `sandbox` to use made up transactions, or `development` for using live credentials
   - webhook URL can be ignored for now, part of localtunnel.me
 5. run `yarn start`
 6. your server should be running, move onto client

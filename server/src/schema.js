@@ -64,19 +64,17 @@ type PlaidItem {
 
 type Query {
 	user(id: ID!): User
-	transaction(id: ID!): Transaction
-	sumTransactions: Float!
+	getTransactions: [Transaction]
 }
 
 type Mutation {
 	signup(user: SigninUserInput!): Token
 	login(user: SigninUserInput!): Token
 	createBudget(budget: CreateBudgetInput!): Budget
-  	createTransaction(transaction: CreateTransactionInput!): Transaction
+  createTransaction(transaction: CreateTransactionInput!): Transaction
 	updateTransaction(id: ID!): Transaction
 	addPlaidItem(token: String!): PlaidItem
-	syncTransactions(userId: ID!): Boolean
-	refreshTransactionsWebhook(itemId: String!, newTransactions: Int!, webhookCode: String!): Boolean
+	syncTransactions(userId: ID!): Transaction
 }
 `
 

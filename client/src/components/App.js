@@ -8,8 +8,6 @@ import TransactionsTable from './TransactionsTable';
 import BudgetStats from './BudgetStats';
 import { compose } from 'react-apollo';
 import Footer from './Footer';
-//import $ from 'jquery'; not being used - remove?
-//import Popper from 'popper.js'; not being used - remove?
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 class App extends Component {
@@ -44,7 +42,7 @@ class App extends Component {
                 <PlaidLink
                   publicKey="0de01812c4e3a7cb3b56cd17d7b9cd"
                   product="auth"
-                  env="sandbox"
+                  env="development"
                   clientName="SimpleBudget"
                   onSuccess={(token, metadata) => this.handleOnSuccess(token,metadata)}
                   className="btn btn-link" 
